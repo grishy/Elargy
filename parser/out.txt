@@ -1,0 +1,692 @@
+
+*** GRAMMAR ***
+Terminals:
+= VariableName STOP EMPTY Number + EOF \d+(\.\d+)? ( / ) - [a-zA-Z_][_a-zA-Z0-9]* *
+NonTerminals:
+Assignments Calc Assignment S' VariableRef E
+Productions:
+0: S' = Calc STOP
+1: Calc = Assignments E
+2: Assignments = Assignment
+3: Assignments = Assignments Assignment
+4: Assignments = 
+5: Assignment = VariableName = Number
+6: E = E + E
+7: E = E - E
+8: E = E * E
+9: E = E / E
+10: E = ( E )
+11: E = VariableRef
+12: E = Number
+13: VariableRef = VariableName
+
+*** STATES ***
+
+
+State 0:S'
+	0: S' = . Calc STOP   {}
+	1: Calc = . Assignments E   {STOP}
+	2: Assignments = . Assignment   {Number, VariableName, (}
+	3: Assignments = . Assignments Assignment   {Number, VariableName, (}
+	4: Assignments = .   {Number, VariableName, (}
+	5: Assignment = . VariableName = Number   {Number, VariableName, (}
+
+
+	GOTO:
+	Calc->1, Assignments->2, Assignment->3
+
+	ACTIONS:
+	(->REDUCE:4, VariableName->[SHIFT:4,REDUCE:4], Number->REDUCE:4
+
+
+State 1:Calc
+	0: S' = Calc . STOP   {}
+
+
+	ACTIONS:
+	STOP->ACCEPT
+
+
+State 2:Assignments
+	1: Calc = Assignments . E   {STOP}
+	3: Assignments = Assignments . Assignment   {Number, VariableName, (}
+	6: E = . E + E   {STOP, +, /, ), -, *}
+	7: E = . E - E   {STOP, +, /, ), -, *}
+	8: E = . E * E   {STOP, +, /, ), -, *}
+	9: E = . E / E   {STOP, +, /, ), -, *}
+	10: E = . ( E )   {STOP, +, /, ), -, *}
+	11: E = . VariableRef   {STOP, +, /, ), -, *}
+	12: E = . Number   {STOP, +, /, ), -, *}
+	5: Assignment = . VariableName = Number   {Number, VariableName, (}
+	13: VariableRef = . VariableName   {STOP, +, /, ), -, *}
+
+
+	GOTO:
+	E->6, Assignment->7, VariableRef->9
+
+	ACTIONS:
+	(->SHIFT:8, Number->SHIFT:10, VariableName->SHIFT:11
+
+
+State 3:Assignment
+	2: Assignments = Assignment .   {Number, VariableName, (}
+
+
+	ACTIONS:
+	(->REDUCE:2, Number->REDUCE:2, VariableName->REDUCE:2
+
+
+State 4:VariableName
+	5: Assignment = VariableName . = Number   {Number, VariableName, (}
+
+
+	ACTIONS:
+	=->SHIFT:12
+
+
+State 5:STOP
+	0: S' = Calc STOP .   {}
+
+
+	ACTIONS:
+	
+
+
+State 6:E
+	1: Calc = Assignments E .   {STOP}
+	6: E = E . + E   {STOP, +, /, ), -, *}
+	7: E = E . - E   {STOP, +, /, ), -, *}
+	8: E = E . * E   {STOP, +, /, ), -, *}
+	9: E = E . / E   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->SHIFT:13, -->SHIFT:14, *->SHIFT:15, /->SHIFT:16, STOP->REDUCE:1
+
+
+State 7:Assignment
+	3: Assignments = Assignments Assignment .   {Number, VariableName, (}
+
+
+	ACTIONS:
+	(->REDUCE:3, Number->REDUCE:3, VariableName->REDUCE:3
+
+
+State 8:(
+	10: E = ( . E )   {STOP, +, /, ), -, *}
+	6: E = . E + E   {/, ), -, +, *}
+	7: E = . E - E   {/, ), -, +, *}
+	8: E = . E * E   {/, ), -, +, *}
+	9: E = . E / E   {/, ), -, +, *}
+	10: E = . ( E )   {/, ), -, +, *}
+	11: E = . VariableRef   {/, ), -, +, *}
+	12: E = . Number   {/, ), -, +, *}
+	13: VariableRef = . VariableName   {STOP, +, /, ), -, *}
+
+
+	GOTO:
+	E->17, VariableRef->9
+
+	ACTIONS:
+	(->SHIFT:8, Number->SHIFT:10, VariableName->SHIFT:18
+
+
+State 9:VariableRef
+	11: E = VariableRef .   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:11, /->REDUCE:11, )->REDUCE:11, -->REDUCE:11, *->REDUCE:11, STOP->REDUCE:11
+
+
+State 10:Number
+	12: E = Number .   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:12, /->REDUCE:12, )->REDUCE:12, -->REDUCE:12, *->REDUCE:12, STOP->REDUCE:12
+
+
+State 11:VariableName
+	5: Assignment = VariableName . = Number   {Number, VariableName, (}
+	13: VariableRef = VariableName .   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	=->SHIFT:12, +->REDUCE:13, /->REDUCE:13, )->REDUCE:13, -->REDUCE:13, *->REDUCE:13, STOP->REDUCE:13
+
+
+State 12:=
+	5: Assignment = VariableName = . Number   {Number, VariableName, (}
+
+
+	ACTIONS:
+	Number->SHIFT:19
+
+
+State 13:+
+	6: E = E + . E   {STOP, +, /, ), -, *}
+	6: E = . E + E   {STOP, +, /, ), -, *}
+	7: E = . E - E   {STOP, +, /, ), -, *}
+	8: E = . E * E   {STOP, +, /, ), -, *}
+	9: E = . E / E   {STOP, +, /, ), -, *}
+	10: E = . ( E )   {STOP, +, /, ), -, *}
+	11: E = . VariableRef   {STOP, +, /, ), -, *}
+	12: E = . Number   {STOP, +, /, ), -, *}
+	13: VariableRef = . VariableName   {STOP, +, /, ), -, *}
+
+
+	GOTO:
+	E->20, VariableRef->9
+
+	ACTIONS:
+	(->SHIFT:8, Number->SHIFT:10, VariableName->SHIFT:18
+
+
+State 14:-
+	7: E = E - . E   {STOP, +, /, ), -, *}
+	6: E = . E + E   {STOP, +, /, ), -, *}
+	7: E = . E - E   {STOP, +, /, ), -, *}
+	8: E = . E * E   {STOP, +, /, ), -, *}
+	9: E = . E / E   {STOP, +, /, ), -, *}
+	10: E = . ( E )   {STOP, +, /, ), -, *}
+	11: E = . VariableRef   {STOP, +, /, ), -, *}
+	12: E = . Number   {STOP, +, /, ), -, *}
+	13: VariableRef = . VariableName   {STOP, +, /, ), -, *}
+
+
+	GOTO:
+	E->21, VariableRef->9
+
+	ACTIONS:
+	(->SHIFT:8, Number->SHIFT:10, VariableName->SHIFT:18
+
+
+State 15:*
+	8: E = E * . E   {STOP, +, /, ), -, *}
+	6: E = . E + E   {STOP, +, /, ), -, *}
+	7: E = . E - E   {STOP, +, /, ), -, *}
+	8: E = . E * E   {STOP, +, /, ), -, *}
+	9: E = . E / E   {STOP, +, /, ), -, *}
+	10: E = . ( E )   {STOP, +, /, ), -, *}
+	11: E = . VariableRef   {STOP, +, /, ), -, *}
+	12: E = . Number   {STOP, +, /, ), -, *}
+	13: VariableRef = . VariableName   {STOP, +, /, ), -, *}
+
+
+	GOTO:
+	E->22, VariableRef->9
+
+	ACTIONS:
+	(->SHIFT:8, Number->SHIFT:10, VariableName->SHIFT:18
+
+
+State 16:/
+	9: E = E / . E   {STOP, +, /, ), -, *}
+	6: E = . E + E   {STOP, +, /, ), -, *}
+	7: E = . E - E   {STOP, +, /, ), -, *}
+	8: E = . E * E   {STOP, +, /, ), -, *}
+	9: E = . E / E   {STOP, +, /, ), -, *}
+	10: E = . ( E )   {STOP, +, /, ), -, *}
+	11: E = . VariableRef   {STOP, +, /, ), -, *}
+	12: E = . Number   {STOP, +, /, ), -, *}
+	13: VariableRef = . VariableName   {STOP, +, /, ), -, *}
+
+
+	GOTO:
+	E->23, VariableRef->9
+
+	ACTIONS:
+	(->SHIFT:8, Number->SHIFT:10, VariableName->SHIFT:18
+
+
+State 17:E
+	10: E = ( E . )   {STOP, +, /, ), -, *}
+	6: E = E . + E   {/, ), -, +, *}
+	7: E = E . - E   {/, ), -, +, *}
+	8: E = E . * E   {/, ), -, +, *}
+	9: E = E . / E   {/, ), -, +, *}
+
+
+	ACTIONS:
+	)->SHIFT:24, +->SHIFT:13, -->SHIFT:14, *->SHIFT:15, /->SHIFT:16
+
+
+State 18:VariableName
+	13: VariableRef = VariableName .   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:13, /->REDUCE:13, )->REDUCE:13, -->REDUCE:13, *->REDUCE:13, STOP->REDUCE:13
+
+
+State 19:Number
+	5: Assignment = VariableName = Number .   {Number, VariableName, (}
+
+
+	ACTIONS:
+	(->REDUCE:5, Number->REDUCE:5, VariableName->REDUCE:5
+
+
+State 20:E
+	6: E = E + E .   {STOP, +, /, ), -, *}
+	6: E = E . + E   {STOP, +, /, ), -, *}
+	7: E = E . - E   {STOP, +, /, ), -, *}
+	8: E = E . * E   {STOP, +, /, ), -, *}
+	9: E = E . / E   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:6, -->REDUCE:6, *->SHIFT:15, /->SHIFT:16, )->REDUCE:6, STOP->REDUCE:6
+
+
+State 21:E
+	7: E = E - E .   {STOP, +, /, ), -, *}
+	6: E = E . + E   {STOP, +, /, ), -, *}
+	7: E = E . - E   {STOP, +, /, ), -, *}
+	8: E = E . * E   {STOP, +, /, ), -, *}
+	9: E = E . / E   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:7, -->REDUCE:7, *->SHIFT:15, /->SHIFT:16, )->REDUCE:7, STOP->REDUCE:7
+
+
+State 22:E
+	8: E = E * E .   {STOP, +, /, ), -, *}
+	6: E = E . + E   {STOP, +, /, ), -, *}
+	7: E = E . - E   {STOP, +, /, ), -, *}
+	8: E = E . * E   {STOP, +, /, ), -, *}
+	9: E = E . / E   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:8, -->REDUCE:8, *->REDUCE:8, /->REDUCE:8, )->REDUCE:8, STOP->REDUCE:8
+
+
+State 23:E
+	9: E = E / E .   {STOP, +, /, ), -, *}
+	6: E = E . + E   {STOP, +, /, ), -, *}
+	7: E = E . - E   {STOP, +, /, ), -, *}
+	8: E = E . * E   {STOP, +, /, ), -, *}
+	9: E = E . / E   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:9, -->REDUCE:9, *->REDUCE:9, /->REDUCE:9, )->REDUCE:9, STOP->REDUCE:9
+
+
+State 24:)
+	10: E = ( E ) .   {STOP, +, /, ), -, *}
+
+
+	ACTIONS:
+	+->REDUCE:10, /->REDUCE:10, )->REDUCE:10, -->REDUCE:10, *->REDUCE:10, STOP->REDUCE:10
+
+*** PARSING STARTED
+
+Current state:
+	Skipping whitespaces: '\n    '
+	New position: (2, 4)
+	Layout content: '
+    '
+	Context: \n    *a = 5\n    
+	Tokens expected: ( or VariableName or Number
+	Token ahead: <VariableName(a)>
+	Shift: 4 "a" at position (2, 4)
+	No action defined for 'VariableName'. Result is matched string.
+	Action result =  type:<class 'str'> value:'a'
+
+Current state: 4
+	Skipping whitespaces: ' '
+	New position: (2, 6)
+	Layout content: ' '
+	Context: \n    a *= 5\n    b 
+	Tokens expected: =
+	Token ahead: <=(=)>
+	Shift: 12 "=" at position (2, 6)
+	No action defined for '='. Result is matched string.
+	Action result =  type:<class 'str'> value:'='
+
+Current state: 12
+	Skipping whitespaces: ' '
+	New position: (2, 8)
+	Layout content: ' '
+	Context: \n    a = *5\n    b = 
+	Tokens expected: Number
+	Token ahead: <Number(5)>
+	Shift: 19 "5" at position (2, 8)
+	Action result =  type:<class 'float'> value:5.0
+
+Current state: 19
+	Skipping whitespaces: '\n    '
+	New position: (3, 4)
+	Layout content: '
+    '
+	Context: a = 5\n    *b = 10\n   
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(b)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'NoneType'> value:None
+
+Current state: 3
+	Context: a = 5\n    *b = 10\n   
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(b)>
+	Reducing by prod '%s'.
+	No action defined  for 'Assignments'.
+	Unpacking a single subresult.
+	Action result = type:<class 'NoneType'> value:None
+
+Current state: 2
+	Context: a = 5\n    *b = 10\n   
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(b)>
+	Shift: 11 "b" at position (3, 4)
+	No action defined for 'VariableName'. Result is matched string.
+	Action result =  type:<class 'str'> value:'b'
+
+Current state: 11
+	Skipping whitespaces: ' '
+	New position: (3, 6)
+	Layout content: ' '
+	Context: = 5\n    b *= 10\n    a
+	Tokens expected: = or + or / or ) or - or * or STOP
+	Token ahead: <=(=)>
+	Shift: 12 "=" at position (3, 6)
+	No action defined for '='. Result is matched string.
+	Action result =  type:<class 'str'> value:'='
+
+Current state: 12
+	Skipping whitespaces: ' '
+	New position: (3, 8)
+	Layout content: ' '
+	Context: 5\n    b = *10\n    a +
+	Tokens expected: Number
+	Token ahead: <Number(10)>
+	Shift: 19 "10" at position (3, 8)
+	Action result =  type:<class 'float'> value:10.0
+
+Current state: 19
+	Skipping whitespaces: '\n    '
+	New position: (4, 4)
+	Layout content: '
+    '
+	Context:  = 10\n    *a + 56.4 /
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(a)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'NoneType'> value:None
+
+Current state: 7
+	Context:  = 10\n    *a + 56.4 /
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(a)>
+	Reducing by prod '%s'.
+	No action defined  for 'Assignments'.
+	Result is a list of subresults.
+	Action result = type:<class 'list'> value:[None, None]
+
+Current state: 2
+	Context:  = 10\n    *a + 56.4 /
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(a)>
+	Shift: 11 "a" at position (4, 4)
+	No action defined for 'VariableName'. Result is matched string.
+	Action result =  type:<class 'str'> value:'a'
+
+Current state: 11
+	Skipping whitespaces: ' '
+	New position: (4, 6)
+	Layout content: ' '
+	Context:  10\n    a *+ 56.4 / 3
+	Tokens expected: = or + or / or ) or - or * or STOP
+	Token ahead: <+(+)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:5.0
+
+Current state: 9
+	Context:  10\n    a *+ 56.4 / 3
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <+(+)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:5.0
+
+Current state: 6
+	Context:  10\n    a *+ 56.4 / 3
+	Tokens expected: + or - or * or / or STOP
+	Token ahead: <+(+)>
+	Shift: 13 "+" at position (4, 6)
+	No action defined for '+'. Result is matched string.
+	Action result =  type:<class 'str'> value:'+'
+
+Current state: 13
+	Skipping whitespaces: ' '
+	New position: (4, 8)
+	Layout content: ' '
+	Context: 0\n    a + *56.4 / 3 *
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <Number(56.4)>
+	Shift: 10 "56.4" at position (4, 8)
+	Action result =  type:<class 'float'> value:56.4
+
+Current state: 10
+	Skipping whitespaces: ' '
+	New position: (4, 13)
+	Layout content: ' '
+	Context:  a + 56.4 */ 3 * 5 - 
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: </(/)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:56.4
+
+Current state: 20
+	Context:  a + 56.4 */ 3 * 5 - 
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: </(/)>
+	Shift: 16 "/" at position (4, 13)
+	No action defined for '/'. Result is matched string.
+	Action result =  type:<class 'str'> value:'/'
+
+Current state: 16
+	Skipping whitespaces: ' '
+	New position: (4, 15)
+	Layout content: ' '
+	Context:  + 56.4 / *3 * 5 - b 
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <Number(3)>
+	Shift: 10 "3" at position (4, 15)
+	Action result =  type:<class 'float'> value:3.0
+
+Current state: 10
+	Skipping whitespaces: ' '
+	New position: (4, 17)
+	Layout content: ' '
+	Context:  56.4 / 3 ** 5 - b + 
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <*(*)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:3.0
+
+Current state: 23
+	Context:  56.4 / 3 ** 5 - b + 
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <*(*)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:18.8
+
+Current state: 20
+	Context:  56.4 / 3 ** 5 - b + 
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <*(*)>
+	Shift: 15 "*" at position (4, 17)
+	No action defined for '*'. Result is matched string.
+	Action result =  type:<class 'str'> value:'*'
+
+Current state: 15
+	Skipping whitespaces: ' '
+	New position: (4, 19)
+	Layout content: ' '
+	Context: 6.4 / 3 * *5 - b + 8 
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <Number(5)>
+	Shift: 10 "5" at position (4, 19)
+	Action result =  type:<class 'float'> value:5.0
+
+Current state: 10
+	Skipping whitespaces: ' '
+	New position: (4, 21)
+	Layout content: ' '
+	Context: 4 / 3 * 5 *- b + 8 * 
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <-(-)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:5.0
+
+Current state: 22
+	Context: 4 / 3 * 5 *- b + 8 * 
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <-(-)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:94.0
+
+Current state: 20
+	Context: 4 / 3 * 5 *- b + 8 * 
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <-(-)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:99.0
+
+Current state: 6
+	Context: 4 / 3 * 5 *- b + 8 * 
+	Tokens expected: + or - or * or / or STOP
+	Token ahead: <-(-)>
+	Shift: 14 "-" at position (4, 21)
+	No action defined for '-'. Result is matched string.
+	Action result =  type:<class 'str'> value:'-'
+
+Current state: 14
+	Skipping whitespaces: ' '
+	New position: (4, 23)
+	Layout content: ' '
+	Context: / 3 * 5 - *b + 8 * 3\n
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <VariableName(b)>
+	Shift: 18 "b" at position (4, 23)
+	No action defined for 'VariableName'. Result is matched string.
+	Action result =  type:<class 'str'> value:'b'
+
+Current state: 18
+	Skipping whitespaces: ' '
+	New position: (4, 25)
+	Layout content: ' '
+	Context: 3 * 5 - b *+ 8 * 3\n  
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <+(+)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:10.0
+
+Current state: 9
+	Context: 3 * 5 - b *+ 8 * 3\n  
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <+(+)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:10.0
+
+Current state: 21
+	Context: 3 * 5 - b *+ 8 * 3\n  
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <+(+)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:89.0
+
+Current state: 6
+	Context: 3 * 5 - b *+ 8 * 3\n  
+	Tokens expected: + or - or * or / or STOP
+	Token ahead: <+(+)>
+	Shift: 13 "+" at position (4, 25)
+	No action defined for '+'. Result is matched string.
+	Action result =  type:<class 'str'> value:'+'
+
+Current state: 13
+	Skipping whitespaces: ' '
+	New position: (4, 27)
+	Layout content: ' '
+	Context: * 5 - b + *8 * 3\n    
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <Number(8)>
+	Shift: 10 "8" at position (4, 27)
+	Action result =  type:<class 'float'> value:8.0
+
+Current state: 10
+	Skipping whitespaces: ' '
+	New position: (4, 29)
+	Layout content: ' '
+	Context: 5 - b + 8 ** 3\n    
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <*(*)>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:8.0
+
+Current state: 20
+	Context: 5 - b + 8 ** 3\n    
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <*(*)>
+	Shift: 15 "*" at position (4, 29)
+	No action defined for '*'. Result is matched string.
+	Action result =  type:<class 'str'> value:'*'
+
+Current state: 15
+	Skipping whitespaces: ' '
+	New position: (4, 31)
+	Layout content: ' '
+	Context: - b + 8 * *3\n    
+	Tokens expected: ( or Number or VariableName
+	Token ahead: <Number(3)>
+	Shift: 10 "3" at position (4, 31)
+	Action result =  type:<class 'float'> value:3.0
+
+Current state: 10
+	Skipping whitespaces: '\n    '
+	New position: (5, 4)
+	Layout content: '
+    '
+	Context: 8 * 3\n    *
+	Tokens expected: + or / or ) or - or * or STOP
+	Token ahead: <STOP()>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:3.0
+
+Current state: 22
+	Context: 8 * 3\n    *
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <STOP()>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:24.0
+
+Current state: 20
+	Context: 8 * 3\n    *
+	Tokens expected: + or - or * or / or ) or STOP
+	Token ahead: <STOP()>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:113.0
+
+Current state: 6
+	Context: 8 * 3\n    *
+	Tokens expected: + or - or * or / or STOP
+	Token ahead: <STOP()>
+	Reducing by prod '%s'.
+	Action result = type:<class 'float'> value:113.0
+
+Current state: 1
+	Context: 8 * 3\n    *
+	Tokens expected: STOP
+	Token ahead: <STOP()>
+SUCCESS!!!
+Input:
+ 
+    a = 5
+    b = 10
+    a + 56.4 / 3 * 5 - b + 8 * 3
+    
+Result =  113.0
