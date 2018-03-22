@@ -1,34 +1,18 @@
 import re
-
-token_pattern = r"""
-(?P<int>[0-9]+)
-|(?P<plus>[+])
-|(?P<open_round_brackets>[(])
-|(?P<close_round_brackets>[)])
-|(?P<newline>\n)
-|(?P<whitespace>\s)
-"""
-
-token_re = re.compile(token_pattern, re.VERBOSE)
-
-class TokenizerException(Exception): pass
-
-def tokenize(text):
-    pos = 0
-    while True:
-        m = token_re.match(text, pos)
-        if not m: break
-        pos = m.end()
-        tokname = m.lastgroup
-        tokvalue = m.group(tokname)
-        yield tokname, tokvalue
-    if pos != len(text):
-        raise TokenizerException('tokenizer stopped at pos %r of %r' % (
-            pos, len(text)))
-
-stuff2 = r'''
-123 + 21332 +  (2345345)  + 1
-'''
-
-for tok in tokenize(stuff2):
-    print(tok)
+ 
+def identifier(scanner, token): return "IDENT", token
+def operator(scanner, token):   return "OPERATOR", token
+def digit(scanner, token):      return "DIGIT", token
+def end_stmnt(scanner, token):  return "END_STATEMENT"
+ 
+scanner = re.Scanner([
+    (r"[a-zA-Z_]\w*", identifier),
+    (r"\+|\-|\\|\*|\=", operator),
+    (r"[0-9]+(\.[0-9]+)?", digit),
+    (r";", end_stmnt),
+    (r"\s+", None),
+    ])
+ 
+tokens, remainder = scanner.scan("foo = 5 * 30; bar = bar - 60;")
+for token in tokens:
+    print(token)
