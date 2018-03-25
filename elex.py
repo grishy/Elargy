@@ -6,10 +6,6 @@
 # -----------------------------------------------------------------------------
 
 import sys
-sys.path.insert(0, "../..")
-
-if sys.version_info[0] >= 3:
-    raw_input = input
 
 tokens = (
     'NAME', 'NUMBER',
@@ -115,7 +111,7 @@ yacc.yacc()
 
 while 1:
     try:
-        s = raw_input('calc > ')
+        s = input('calc > ')
     except EOFError:
         break
     if not s:
