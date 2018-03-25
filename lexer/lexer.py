@@ -2,6 +2,13 @@ import collections
 import re
 import json
 
+# {
+#     "typ": "ID",
+#     "val": "tax",
+#     "line": 1,
+#     "column": 10,
+# }
+
 Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
 
 def tokenize(code):
