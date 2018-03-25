@@ -1,4 +1,5 @@
 import re
+import json
  
 line = 1
 
@@ -25,5 +26,5 @@ foo = 5 * 30; bar = bar - 60;
 sdf
 sdfg
 """)
-for token in tokens:
-    print(token)
+
+print(json.dumps(tokens, indent=4))
