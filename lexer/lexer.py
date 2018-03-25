@@ -1,30 +1,57 @@
+import collections
 import re
 import json
- 
-line = 1
 
-def identifier(scanner, token): return "IDENT", token, scanner.match.regs[0], line
-def operator(scanner, token):   return "OPERATOR", token, scanner.match.regs[0], line
-def digit(scanner, token):      return "DIGIT", token, scanner.match.regs[0], line
-def end_stmnt(scanner, token):  return "END_STATEMENT", scanner.match.regs[0], line
-def next_line(scanner, token):  
-    global line 
-    line = line + 1
-    return "NEXT_LINE", scanner.match.regs[0], line
- 
-scanner = re.Scanner([
-    (r"[a-zA-Z_]\w*", identifier),
-    (r"\+|\-|\\|\*|\=", operator),
-    (r"[0-9]+(\.[0-9]+)?", digit),
-    (r";", end_stmnt),
-    (r"\n", next_line),
-    (r"\s+", None),
-    ])
- 
-tokens, remainder = scanner.scan("""
-foo = 5 * 30; bar = bar - 60;
-sdf
-sdfg
-""")
+Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
 
-print(json.dumps(tokens, indent=4))
+def tokenize(code):
+
+    keywords = {'IF', 'THEN', 'ENDIF', 'FOR', 'NEXT', 'GOSUB', 'RETURN'}
+
+    token_specification = [
+        ('NUMBER',  r'\d+(\.\d*)?'),  # Integer or decimal number
+        ('ASSIGN',  r':='),           # Assignment operator
+        ('END',     r';'),            # Statement terminator
+        ('ID',      r'[A-Za-z]+'),    # Identifiers
+        ('OP',      r'[+\-*/]'),      # Arithmetic operators
+        ('NEWLINE', r'\n'),           # Line endings
+        ('SKIP',    r'[ \t]+'),       # Skip over spaces and tabs
+        ('MISMATCH',r'.'),            # Any other character
+    ]
+
+    tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
+    tokens = []
+    line_num = 1
+    line_start = 0
+
+    for mo in re.finditer(tok_regex, code):
+        kind = mo.lastgroup
+        value = mo.group(kind)
+    
+        if kind == 'NEWLINE':
+            line_start = mo.end()
+            line_num += 1
+        elif kind == 'SKIP':
+            pass
+        elif kind == 'MISMATCH':
+            raise RuntimeError(f'{value!r} unexpected on line {line_num}')
+        else:
+            if kind == 'ID' and value in keywords:
+                kind = value
+            column = mo.start() - line_start
+
+            tokens.append(Token(kind, value, line_num, column))
+    
+    return tokens
+
+statements = '''
+    IF quantity THEN
+        total := total + price * quantity;
+        tax := price * 0.05;
+    ENDIF;
+'''
+
+# To list of tokens
+tokens = tokenize(statements)
+
+print(json.dumps(tokens, indent=2))
