@@ -9,8 +9,6 @@ import json
 #     "column": 10,
 # }
 
-Token = collections.namedtuple('Token', ['typ', 'value', 'line', 'column'])
-
 def tokenize(code):
 
     keywords = {'IF', 'THEN', 'ENDIF', 'FOR', 'NEXT', 'GOSUB', 'RETURN'}
@@ -47,7 +45,12 @@ def tokenize(code):
                 kind = value
             column = mo.start() - line_start
 
-            tokens.append(Token(kind, value, line_num, column))
+            tokens.append({
+                "typ": kind,
+                "val": value,
+                "line": line_num,
+                "column": column
+                })
     
     return tokens
 
