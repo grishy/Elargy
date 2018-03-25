@@ -1,116 +1,116 @@
 [
-  [
-    "IF",
-    "IF",
-    2,
-    4
-  ],
-  [
-    "ID",
-    "quantity",
-    2,
-    7
-  ],
-  [
-    "THEN",
-    "THEN",
-    2,
-    16
-  ],
-  [
-    "ID",
-    "total",
-    3,
-    8
-  ],
-  [
-    "ASSIGN",
-    ":=",
-    3,
-    14
-  ],
-  [
-    "ID",
-    "total",
-    3,
-    17
-  ],
-  [
-    "OP",
-    "+",
-    3,
-    23
-  ],
-  [
-    "ID",
-    "price",
-    3,
-    25
-  ],
-  [
-    "OP",
-    "*",
-    3,
-    31
-  ],
-  [
-    "ID",
-    "quantity",
-    3,
-    33
-  ],
-  [
-    "END",
-    ";",
-    3,
-    41
-  ],
-  [
-    "ID",
-    "tax",
-    4,
-    8
-  ],
-  [
-    "ASSIGN",
-    ":=",
-    4,
-    12
-  ],
-  [
-    "ID",
-    "price",
-    4,
-    15
-  ],
-  [
-    "OP",
-    "*",
-    4,
-    21
-  ],
-  [
-    "NUMBER",
-    "0.05",
-    4,
-    23
-  ],
-  [
-    "END",
-    ";",
-    4,
-    27
-  ],
-  [
-    "ENDIF",
-    "ENDIF",
-    5,
-    4
-  ],
-  [
-    "END",
-    ";",
-    5,
-    9
-  ]
+  {
+    "typ": "IF",
+    "val": "IF",
+    "line": 2,
+    "column": 4
+  },
+  {
+    "typ": "ID",
+    "val": "quantity",
+    "line": 2,
+    "column": 7
+  },
+  {
+    "typ": "THEN",
+    "val": "THEN",
+    "line": 2,
+    "column": 16
+  },
+  {
+    "typ": "ID",
+    "val": "total",
+    "line": 3,
+    "column": 8
+  },
+  {
+    "typ": "ASSIGN",
+    "val": ":=",
+    "line": 3,
+    "column": 14
+  },
+  {
+    "typ": "ID",
+    "val": "total",
+    "line": 3,
+    "column": 17
+  },
+  {
+    "typ": "OP",
+    "val": "+",
+    "line": 3,
+    "column": 23
+  },
+  {
+    "typ": "ID",
+    "val": "price",
+    "line": 3,
+    "column": 25
+  },
+  {
+    "typ": "OP",
+    "val": "*",
+    "line": 3,
+    "column": 31
+  },
+  {
+    "typ": "ID",
+    "val": "quantity",
+    "line": 3,
+    "column": 33
+  },
+  {
+    "typ": "END",
+    "val": ";",
+    "line": 3,
+    "column": 41
+  },
+  {
+    "typ": "ID",
+    "val": "tax",
+    "line": 4,
+    "column": 8
+  },
+  {
+    "typ": "ASSIGN",
+    "val": ":=",
+    "line": 4,
+    "column": 12
+  },
+  {
+    "typ": "ID",
+    "val": "price",
+    "line": 4,
+    "column": 15
+  },
+  {
+    "typ": "OP",
+    "val": "*",
+    "line": 4,
+    "column": 21
+  },
+  {
+    "typ": "NUMBER",
+    "val": "0.05",
+    "line": 4,
+    "column": 23
+  },
+  {
+    "typ": "END",
+    "val": ";",
+    "line": 4,
+    "column": 27
+  },
+  {
+    "typ": "ENDIF",
+    "val": "ENDIF",
+    "line": 5,
+    "column": 4
+  },
+  {
+    "typ": "END",
+    "val": ";",
+    "line": 5,
+    "column": 9
+  }
 ]

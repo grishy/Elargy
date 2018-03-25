@@ -2,6 +2,7 @@ import collections
 import re
 import json
 
+# Export
 # {
 #     "typ": "ID",
 #     "val": "tax",
@@ -9,19 +10,20 @@ import json
 #     "column": 10,
 # }
 
+
 def tokenize(code):
 
     keywords = {'IF', 'THEN', 'ENDIF', 'FOR', 'NEXT', 'GOSUB', 'RETURN'}
 
     token_specification = [
-        ('NUMBER',  r'\d+(\.\d*)?'),  # Integer or decimal number
-        ('ASSIGN',  r':='),           # Assignment operator
-        ('END',     r';'),            # Statement terminator
-        ('ID',      r'[A-Za-z]+'),    # Identifiers
-        ('OP',      r'[+\-*/]'),      # Arithmetic operators
-        ('NEWLINE', r'\n'),           # Line endings
-        ('SKIP',    r'[ \t]+'),       # Skip over spaces and tabs
-        ('MISMATCH',r'.'),            # Any other character
+        ('NUMBER',  r'\d+(\.\d*)?'),
+        ('ASSIGN',  r':='),
+        ('END',     r';'),
+        ('ID',      r'[A-Za-z]+'),
+        ('OP',      r'[+\-*/]'),
+        ('NEWLINE', r'\n'),
+        ('SKIP',    r'[ \t]+'),
+        ('MISMATCH', r'.'),
     ]
 
     tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
@@ -32,7 +34,7 @@ def tokenize(code):
     for mo in re.finditer(tok_regex, code):
         kind = mo.lastgroup
         value = mo.group(kind)
-    
+
         if kind == 'NEWLINE':
             line_start = mo.end()
             line_num += 1
@@ -50,9 +52,10 @@ def tokenize(code):
                 "val": value,
                 "line": line_num,
                 "column": column
-                })
-    
+            })
+
     return tokens
+
 
 statements = '''
     IF quantity THEN
