@@ -2,17 +2,28 @@ import collections
 import re
 import json
 
-# Export
-# {
-#     "typ": "ID",
-#     "val": "tax",
-#     "line": 1,
-#     "column": 10,
-# }
+TOKENS = []
+
+
+def addToken(kind, value, line_num, column):
+    global TOKENS
+
+    # Export
+    # {
+    #     "typ": "ID",
+    #     "val": "tax",
+    #     "line": 1,
+    #     "column": 10,
+    # }
+    TOKENS.append({
+        "typ": kind,
+        "val": value,
+        "line": line_num,
+        "column": column
+    })
 
 
 def tokenize(code):
-
     keywords = {'IF', 'THEN', 'ENDIF', 'FOR', 'NEXT', 'GOSUB', 'RETURN'}
 
     token_specification = [
@@ -27,7 +38,7 @@ def tokenize(code):
     ]
 
     tok_regex = '|'.join('(?P<%s>%s)' % pair for pair in token_specification)
-    tokens = []
+
     line_num = 1
     line_start = 0
 
@@ -47,14 +58,7 @@ def tokenize(code):
                 kind = value
             column = mo.start() - line_start
 
-            tokens.append({
-                "typ": kind,
-                "val": value,
-                "line": line_num,
-                "column": column
-            })
-
-    return tokens
+            addToken(kind, value, line_num, column)
 
 
 statements = '''
@@ -65,6 +69,6 @@ statements = '''
 '''
 
 # To list of tokens
-tokens = tokenize(statements)
+tokenize(statements)
 
-print(json.dumps(tokens, indent=2))
+print(json.dumps(TOKENS, indent=2))
