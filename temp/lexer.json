@@ -1,0 +1,44 @@
+[
+  {
+    "typ": "NUMBER",
+    "val": "1",
+    "line": 1,
+    "column": 0
+  },
+  {
+    "typ": "PLUS",
+    "val": "+",
+    "line": 1,
+    "column": 2
+  },
+  {
+    "typ": "NUMBER",
+    "val": "2",
+    "line": 1,
+    "column": 4
+  },
+  {
+    "typ": "PLUS",
+    "val": "+",
+    "line": 1,
+    "column": 6
+  },
+  {
+    "typ": "NUMBER",
+    "val": "1",
+    "line": 1,
+    "column": 8
+  },
+  {
+    "typ": "PLUS",
+    "val": "+",
+    "line": 1,
+    "column": 10
+  },
+  {
+    "typ": "NUMBER",
+    "val": "34",
+    "line": 1,
+    "column": 12
+  }
+]

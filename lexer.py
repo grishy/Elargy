@@ -23,7 +23,7 @@ class Lexer:
                                   pair for pair in Lexer.token_specification)
 
     def tokenize(self):
-        for mo in re.finditer(tok_regex, code):
+        for mo in re.finditer(self.tok_regex, self.text):
             kind = mo.lastgroup
             value = mo.group(kind)
 
@@ -37,16 +37,19 @@ class Lexer:
             else:
                 # if kind == 'ID' and value in keywords:
                 #     kind = value
-                column = mo.start() - line_start
-                addToken(kind, value)
+                column = mo.start() - self.line_start
+                self.addToken(kind, value, column)
 
-    def addToken(self, kind, value):
+    def addToken(self, kind, value, column):
         self.tokens.append({
             "typ": kind,
             "val": value,
             "line": self.line_num,
-            "column": self.column
+            "column": column
         })
 
     def toJSON(self):
         return json.dumps(self.tokens, indent=2)
+
+    def getTokens(self):
+        return self.tokens
