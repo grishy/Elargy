@@ -10,7 +10,7 @@ class Lexer:
         ('RBRACE',      r'\}'),
         ('COLON',       r'\:'),
         ('SEMICOLON',   r'\;'),
-        ('INTEGER',     r'\d+'),
+        ('INTEGER',     r'[-+]?\d+'),
         ('ID',          r'[A-Za-z]+'),
         ('PLUS',        r'\+'),
         ('ASSIGN',      r'='),

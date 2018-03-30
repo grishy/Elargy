@@ -103,7 +103,7 @@
   },
   {
     "typ": "INTEGER",
-    "val": "10",
+    "val": "-10",
     "line": 3,
     "column": 49
   },
@@ -111,54 +111,54 @@
     "typ": "SEMICOLON",
     "val": ";",
     "line": 3,
-    "column": 51
+    "column": 52
   },
   {
     "typ": "ID",
     "val": "write",
     "line": 4,
-    "column": 57
+    "column": 58
   },
   {
     "typ": "LPAREN",
     "val": "(",
     "line": 4,
-    "column": 62
+    "column": 63
   },
   {
     "typ": "ID",
     "val": "x",
     "line": 4,
-    "column": 63
+    "column": 64
   },
   {
     "typ": "PLUS",
     "val": "+",
     "line": 4,
-    "column": 65
+    "column": 66
   },
   {
     "typ": "ID",
     "val": "y",
     "line": 4,
-    "column": 67
+    "column": 68
   },
   {
     "typ": "RPAREN",
     "val": ")",
     "line": 4,
-    "column": 68
+    "column": 69
   },
   {
     "typ": "SEMICOLON",
     "val": ";",
     "line": 4,
-    "column": 69
+    "column": 70
   },
   {
     "typ": "RBRACE",
     "val": "}",
     "line": 5,
-    "column": 71
+    "column": 72
   }
 ]
