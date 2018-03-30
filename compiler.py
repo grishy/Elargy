@@ -2,7 +2,7 @@ import sys
 import lexer
 
 # name = sys.argv[1] 
-name = "tests/calc.elg" 
+name = "tests/main.elg" 
 
 with open(name, 'r') as content_file:
     f = content_file.read()

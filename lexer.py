@@ -4,14 +4,22 @@ import json
 
 class Lexer:
     token_specification = [
-        ('NUMBER',  r'\d+'),
-        ('PLUS',  r'\+'),
-        ('NEWLINE', r'\n'),
-        ('SKIP',    r'[ \t]+'),
-        ('MISMATCH', r'.'),
+        ('LPAREN',      r'\('),
+        ('RPAREN',      r'\)'),
+        ('LBRACE',      r'\{'),
+        ('RBRACE',      r'\}'),
+        ('COLON',       r'\:'),
+        ('SEMICOLON',   r'\;'),
+        ('INTEGER',     r'\d+'),
+        ('ID',          r'[A-Za-z]+'),
+        ('PLUS',        r'\+'),
+        ('ASSIGN',      r'='),
+        ('NEWLINE',     r'\n'),
+        ('SKIP',        r'[ \t]+'),
+        ('MISMATCH',    r'.'),
     ]
 
-    # keywords = {'IF', 'THEN', 'ENDIF', 'FOR', 'NEXT', 'GOSUB', 'RETURN'}
+    keywords = {'func', 'var', 'int'}
 
     def __init__(self, text):
         self.text = text
@@ -29,14 +37,16 @@ class Lexer:
 
             if kind == 'NEWLINE':
                 line_start = mo.end()
-                line_num += 1
+                self.line_num += 1
             elif kind == 'SKIP':
                 pass
             elif kind == 'MISMATCH':
-                raise RuntimeError(f'{value!r} unexpected on line {line_num}')
+                raise RuntimeError(
+                    f'{value!r} unexpected on line {self.line_num}')
             else:
-                # if kind == 'ID' and value in keywords:
-                #     kind = value
+                if kind == 'ID' and value in self.keywords:
+                    kind = value
+
                 column = mo.start() - self.line_start
                 self.addToken(kind, value, column)
 
