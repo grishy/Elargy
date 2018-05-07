@@ -1,6 +1,6 @@
 grammar = open("grammar.bnf", "r")
 
-terminals = 
+# terminals = 
 
 
 print(grammar.read()) 
