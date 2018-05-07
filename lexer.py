@@ -1,19 +1,14 @@
 import re
 import json
 
-
 class Lexer:
     token_specification = [
         ('LPAREN',      r'\('),
         ('RPAREN',      r'\)'),
-        ('LBRACE',      r'\{'),
-        ('RBRACE',      r'\}'),
-        ('COLON',       r'\:'),
-        ('SEMICOLON',   r'\;'),
         ('INTEGER',     r'[-+]?\d+'),
-        ('ID',          r'[A-Za-z]+'),
         ('PLUS',        r'\+'),
-        ('ASSIGN',      r'='),
+        ('MINUS',       r'\-'),
+        # Special
         ('NEWLINE',     r'\n'),
         ('SKIP',        r'[ \t]+'),
         ('MISMATCH',    r'.'),

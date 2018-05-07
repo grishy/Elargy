@@ -1,164 +1,56 @@
 [
   {
-    "typ": "func",
-    "val": "func",
+    "typ": "INTEGER",
+    "val": "1",
     "line": 1,
     "column": 0
   },
   {
-    "typ": "ID",
-    "val": "main",
+    "typ": "PLUS",
+    "val": "+",
     "line": 1,
-    "column": 5
-  },
-  {
-    "typ": "LPAREN",
-    "val": "(",
-    "line": 1,
-    "column": 9
-  },
-  {
-    "typ": "RPAREN",
-    "val": ")",
-    "line": 1,
-    "column": 10
-  },
-  {
-    "typ": "LBRACE",
-    "val": "{",
-    "line": 1,
-    "column": 12
-  },
-  {
-    "typ": "var",
-    "val": "var",
-    "line": 2,
-    "column": 18
-  },
-  {
-    "typ": "ID",
-    "val": "x",
-    "line": 2,
-    "column": 22
-  },
-  {
-    "typ": "COLON",
-    "val": ":",
-    "line": 2,
-    "column": 23
-  },
-  {
-    "typ": "int",
-    "val": "int",
-    "line": 2,
-    "column": 24
-  },
-  {
-    "typ": "ASSIGN",
-    "val": "=",
-    "line": 2,
-    "column": 28
+    "column": 2
   },
   {
     "typ": "INTEGER",
-    "val": "5",
-    "line": 2,
-    "column": 30
+    "val": "2",
+    "line": 1,
+    "column": 4
   },
   {
-    "typ": "SEMICOLON",
-    "val": ";",
-    "line": 2,
-    "column": 31
-  },
-  {
-    "typ": "var",
-    "val": "var",
-    "line": 3,
-    "column": 37
-  },
-  {
-    "typ": "ID",
-    "val": "y",
-    "line": 3,
-    "column": 41
-  },
-  {
-    "typ": "COLON",
-    "val": ":",
-    "line": 3,
-    "column": 42
-  },
-  {
-    "typ": "int",
-    "val": "int",
-    "line": 3,
-    "column": 43
-  },
-  {
-    "typ": "ASSIGN",
-    "val": "=",
-    "line": 3,
-    "column": 47
+    "typ": "MINUS",
+    "val": "-",
+    "line": 1,
+    "column": 6
   },
   {
     "typ": "INTEGER",
-    "val": "-10",
-    "line": 3,
-    "column": 49
-  },
-  {
-    "typ": "SEMICOLON",
-    "val": ";",
-    "line": 3,
-    "column": 52
-  },
-  {
-    "typ": "ID",
-    "val": "write",
-    "line": 4,
-    "column": 58
-  },
-  {
-    "typ": "LPAREN",
-    "val": "(",
-    "line": 4,
-    "column": 63
-  },
-  {
-    "typ": "ID",
-    "val": "x",
-    "line": 4,
-    "column": 64
+    "val": "1",
+    "line": 1,
+    "column": 8
   },
   {
     "typ": "PLUS",
     "val": "+",
-    "line": 4,
-    "column": 66
+    "line": 1,
+    "column": 10
   },
   {
-    "typ": "ID",
-    "val": "y",
-    "line": 4,
-    "column": 68
+    "typ": "INTEGER",
+    "val": "34",
+    "line": 1,
+    "column": 12
   },
   {
-    "typ": "RPAREN",
-    "val": ")",
-    "line": 4,
-    "column": 69
+    "typ": "PLUS",
+    "val": "+",
+    "line": 1,
+    "column": 15
   },
   {
-    "typ": "SEMICOLON",
-    "val": ";",
-    "line": 4,
-    "column": 70
-  },
-  {
-    "typ": "RBRACE",
-    "val": "}",
-    "line": 5,
-    "column": 72
+    "typ": "INTEGER",
+    "val": "500",
+    "line": 1,
+    "column": 17
   }
 ]
