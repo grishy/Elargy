@@ -1,7 +1,8 @@
 import re
 import json
 
-class Lexer:
+
+class ElLexer:
     token_specification = [
         ('LPAREN',      r'\('),
         ('RPAREN',      r'\)'),
@@ -23,7 +24,7 @@ class Lexer:
         self.line_start = 0
 
         self.tok_regex = '|'.join('(?P<%s>%s)' %
-                                  pair for pair in Lexer.token_specification)
+                                  pair for pair in self.token_specification)
 
     def tokenize(self):
         for mo in re.finditer(self.tok_regex, self.text):
