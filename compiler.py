@@ -19,3 +19,5 @@ with open(name, 'r') as content_file:
 
     # Parser
     parse = el_parse.ElParser("grammar.bnf")
+    # parse.Parse(lex)
+    # parser.toJSON()
