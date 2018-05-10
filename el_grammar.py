@@ -1,7 +1,8 @@
 def setToText(s):
     text = "{"
     text += " ".join([str(i) for i in s])
-    return text + "}" 
+    return text + "}"
+
 
 class ElRuleSymbol:
     def __init__(self, text):
@@ -16,12 +17,6 @@ class ElRuleSymbol:
     def setRight(self, idx):
         self.right.add(idx)
 
-    def toText(self):
-        text = setToText(self.left)
-        text += self.text
-        text += setToText(self.right)
-        return text
-
 
 class ElRule:
     def __init__(self, text):
@@ -34,9 +29,14 @@ class ElRule:
         self.right_side[0].left.add(idx)
 
     def toText(self):
-        text = self.left_side +": "
-        for r in self.right_side:
-            text += r.toText() + " "
+        text = self.left_side + ": "
+        for i in range(len(self.right_side)):
+            text += setToText(self.right_side[i].left)
+            text += self.right_side[i].text
+            try:
+                self.right_side[i + 1]
+            except (IndexError, ValueError):
+                text += setToText(self.right_side[i].right) + " "
         return text + "\n"
 
 
