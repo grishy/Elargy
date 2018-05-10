@@ -11,6 +11,11 @@ class ElRuleSymbol:
     def setRight(self, idx):
         self.right.add(idx)
 
+    def printSym(self):
+        print(self.left,  end='')
+        print(self.text,  end='')
+        print(self.right,  end='')
+
 
 class ElRule:
     def __init__(self, text):
@@ -22,6 +27,12 @@ class ElRule:
     def setFirst(self, idx):
         self.right_side[0].left.add(idx)
 
+    def printRule(self):
+        print(self.left_side, end=': ')
+        for s in self.right_side:
+            print(s.printSym(),  end=' ')
+        print('')
+
 
 class ElParser:
     def __init__(self, grammarFile):
@@ -31,7 +42,10 @@ class ElParser:
         self.setType()
 
         self.setIndex()
-        print(self.rules)
+
+        self.printGram()
+
+        
 
     def setType(self):
         """Расстановка символу их типа: Терменал/Не терминал"""
@@ -64,6 +78,7 @@ class ElParser:
                 # У следующего символа тоже, на следующем этапе будет оптимизировано
                 if sym_next is not None:
                     sym_next.setLeft(IDX)
+                    self.setLeftAll(sym_next, IDX)
 
                 IDX += 1
 
@@ -80,3 +95,7 @@ class ElParser:
     def findRulesLeft(self, sym):
         """Найти все паравила, где слева идет указанный символ"""
         return [r for r in self.rules if r.left_side == sym.text]
+
+    def printGram(self):
+        for r in self.rules:
+            r.printRule()
