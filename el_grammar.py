@@ -33,7 +33,6 @@ class ElRule:
         for i in range(len(self.right_side)):
             text += setToText(self.right_side[i].left)
             text += self.right_side[i].text
-            # text += setToText(self.right_side[i].right) + " "
             try:
                 self.right_side[i + 1]
             except (IndexError, ValueError):

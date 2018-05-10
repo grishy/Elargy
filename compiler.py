@@ -9,7 +9,7 @@ steps = "steps/"
 with open(name, 'r') as content_file:
     f = content_file.read()
 
-    # To tokens
+    # Lexer
     lex = el_lexer.ElLexer(f)
     lex.tokenize()
     # Save to temp dir
