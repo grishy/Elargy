@@ -1,6 +1,6 @@
 import sys
 import el_lexer
-import el_parse
+import el_grammar
 
 # name = sys.argv[1]
 name = "examples/calc.elg"
@@ -17,7 +17,9 @@ with open(name, 'r') as content_file:
     lexerOut.write(lex.toJSON())
     lexerOut.close()
 
-    # Parser
-    parse = el_parse.ElParser("grammar.bnf")
-    # parse.Parse(lex)
-    # parser.toJSON()
+    # Grammar
+    grammar = el_grammar.ElGrammar("grammar.bnf")
+    # Save to temp dir
+    grammarOut = open(steps + 'grammar.txt', 'w+')
+    grammarOut.write(grammar.toText())
+    grammarOut.close()
