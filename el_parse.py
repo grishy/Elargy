@@ -30,8 +30,8 @@ class ElRule:
     def printRule(self):
         print(self.left_side, end=': ')
         for s in self.right_side:
-            print(s.printSym(),  end=' ')
-        print('')
+            s.printSym()
+        print()
 
 
 class ElParser:
