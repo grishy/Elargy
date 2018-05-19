@@ -1,6 +1,7 @@
 import sys
 import el_lexer
 import el_grammar
+import el_table
 
 # name = sys.argv[1]
 name = "examples/calc.elg"
@@ -23,3 +24,10 @@ with open(name, 'r') as content_file:
     grammarOut = open(steps + 'grammar.txt', 'w+')
     grammarOut.write(grammar.toText())
     grammarOut.close()
+
+    # Table
+    table = el_table.ElTable(grammar)
+    # Save to temp dir
+    # tableOut = open(steps + 'table.txt', 'w+')
+    # tableOut.write(table.toText())
+    # tableOut.close()

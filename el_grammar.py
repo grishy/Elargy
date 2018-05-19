@@ -35,19 +35,25 @@ class ElRule:
             text += self.right_side[i].text
             try:
                 self.right_side[i + 1]
+                # text += setToText(self.right_side[i].right) + " "
             except (IndexError, ValueError):
-                text += setToText(self.right_side[i].right) + " "
+                text += setToText(self.right_side[i].right)
         return text + "\n"
 
 
 class ElGrammar:
     def __init__(self, grammarFile):
+        self.idxs = set()     
+        self.notTerm = set()     
+        self.term = set()     
+
         self.rules_text = open(grammarFile, "r").readlines()
         self.rules = [ElRule(t) for t in self.rules_text]
 
         self.setType()
         self.setIndex()
         self.apply3()
+        self.capture()
 
     def setType(self):
         """Расстановка символу их типа: Терменал/Не терминал"""
@@ -115,3 +121,13 @@ class ElGrammar:
             for f in range(i):
                 if allSymb[f].text == s.text and allSymb[f].left == s.left:
                     s.right = allSymb[f].right
+
+    def capture(self):
+        for r in self.rules:
+            for s in r.right_side:
+                if s.type == "Not-Term":
+                    self.notTerm.add(s.text)
+                else:
+                    self.term.add(s.text)
+                self.idxs.update(s.left)
+                self.idxs.update(s.right)
