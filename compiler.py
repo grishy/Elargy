@@ -7,6 +7,7 @@ import el_table
 name = "examples/calc.elg"
 steps = "steps/"
 
+
 with open(name, 'r') as content_file:
     f = content_file.read()
 

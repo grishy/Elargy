@@ -9,13 +9,13 @@ class ElRuleSymbol:
         self.text = text
         self.type = "Term"
         self.left = set()
-        self.right = set()
+        self.right = -1
 
     def setLeft(self, idx):
         self.left.add(idx)
 
     def setRight(self, idx):
-        self.right.add(idx)
+        self.right = idx
 
 
 class ElRule:
@@ -37,15 +37,15 @@ class ElRule:
                 self.right_side[i + 1]
                 # text += setToText(self.right_side[i].right) + " "
             except (IndexError, ValueError):
-                text += setToText(self.right_side[i].right)
+                text += "{" + str(self.right_side[i].right) + "}"
         return text + "\n"
 
 
 class ElGrammar:
     def __init__(self, grammarFile):
-        self.idxs = set()     
-        self.notTerm = set()     
-        self.term = set()     
+        self.idxs = set()
+        self.notTerm = set()
+        self.term = set()
 
         self.rules_text = open(grammarFile, "r").readlines()
         self.rules = [ElRule(t) for t in self.rules_text]
@@ -130,4 +130,4 @@ class ElGrammar:
                 else:
                     self.term.add(s.text)
                 self.idxs.update(s.left)
-                self.idxs.update(s.right)
+                self.idxs.add(s.right)
