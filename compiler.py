@@ -29,6 +29,6 @@ with open(name, 'r') as content_file:
     # Table
     table = el_table.ElTable(grammar)
     # Save to temp dir
-    # tableOut = open(steps + 'table.txt', 'w+')
-    # tableOut.write(table.toText())
-    # tableOut.close()
+    tableOut = open(steps + 'table.html', 'w+')
+    tableOut.write(table.toHTML())
+    tableOut.close()
