@@ -43,6 +43,7 @@ class ElTable:
         self.table = {}
 
         self.setShift()
+        self.setReverse()
         # print(self)
 
     def setShift(self):
@@ -50,6 +51,40 @@ class ElTable:
             for s in r.right_side:
                 for l in s.left:
                     self.setСell(l, s.text, s.right)
+
+    def setReverse(self):
+        num_rules = 0
+        for numR, r in enumerate(self.gm.rules):
+            num_rules = num_rules + 1 
+            last_index = r.right_side[-1].right
+            last_symb = r.right_side[-1]
+            search_Left_side = r.left_side
+            print(r.left_side)
+            #print(r.right_side[-1].text)
+            #print(r.right_side[-1].right)
+            self.getNextSymb(search_Left_side, num_rules, last_index)
+            
+            
+                    
+    def getNextSymb(self, search_Left_side, num_rules, last_index):
+        next_symb = ''
+        for numT, s in enumerate(self.gm.rules):
+                j = -1
+                for  t in s.right_side:
+                    j=j+1
+                    if(t.text == search_Left_side): 
+                        if((t == s.right_side[-1]) & (t == s.right_side[0])):
+                            self.getNextSymb(s.left_side, num_rules, last_index)
+                        
+                        if(t == s.right_side[-1]):
+                            #print("Последний")
+                            next_symb = '$'
+                            self.setСell(last_index,next_symb, 'R%(rule)i'%{"rule":num_rules})
+                        else: 
+                            #print("    " + s.right_side[j+1].text)
+                            next_symb = s.right_side[j+1].text
+                            self.setСell(last_index,next_symb, 'R%(rule)i'%{"rule":num_rules})
+                            #print("yes")
 
     def setСell(self, left, top, val):
         if left in self.table:
@@ -60,6 +95,7 @@ class ElTable:
 
     def toHTML(self):
         topList = sorted(list(self.gm.notTerm | self.gm.term))
+        topList.append("$")
         leftList = sorted(list(self.gm.idxs))
 
         topHTML = ["<th>{}</th>".format(x) for x in [""] + topList]
