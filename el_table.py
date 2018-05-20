@@ -2,6 +2,8 @@ import re
 import json
 import el_grammar
 
+#TO DO: R1 and admission in table 
+xxx
 
 class ElTable:
     TABLE = '''
@@ -59,9 +61,6 @@ class ElTable:
             last_index = r.right_side[-1].right
             last_symb = r.right_side[-1]
             search_Left_side = r.left_side
-            print(r.left_side)
-            #print(r.right_side[-1].text)
-            #print(r.right_side[-1].right)
             self.getNextSymb(search_Left_side, num_rules, last_index)
             
             
