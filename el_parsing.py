@@ -1,15 +1,21 @@
+import copy
+
 class ElParser:
     def __init__(self, grammar, table, lex):
         self.gm = grammar
         self.tl = table
         self.lx = lex
         self.lx.addToken("$",0,0)
+        self.tree = {}
+
         operation = ''
         ind = 0
         states = [1]
         symbols =''
+        
         while True:
-            symb = self.lx.tokens[ind]['typ']
+            symb = self.lx.tokens[ind]
+            t = symb['typ']
             st = states[-1]
             # print('Символ')
             # print(self.lx.tokens[ind]['typ'])
@@ -18,21 +24,29 @@ class ElParser:
             # print('Индекс')
             # print(ind)
             try:
-                operation = self.tl.table[st][symb]
+                operation = self.tl.table[st][t]
             except:
                 operation = 'error'
-            # print(operation)
+
+            
             if(operation == 'admission'):
+                self.tree = self.lx.tokens[-2]
                 print('ACEPT')
                 break
             elif(operation[0] == 'R'):
-                self.lx.tokens[ind-1]['typ'] = self.gm.rules[int(operation[1:])-1].left_side
-                # print(self.lx.tokens[ind]['typ'])
-                ln = len(self.gm.rules[int(operation[1:])-1].right_side)
+                rul = self.gm.rules[int(operation[1:])-1]
+
+                ln = len(rul.right_side)
                 for x in range(ln):
                     states.pop(-1)
-                ind = ind - 1
-                pass
+
+                tokens = self.lx.tokens[ind - ln:ind]
+                ind-=1
+                
+                self.lx.tokens[ind] = {
+                    'typ': rul.left_side,
+                    'child' : tokens
+                }
             elif(operation == 'error'):
                 print('PARSE ERROR')
                 break
@@ -40,7 +54,5 @@ class ElParser:
                 states.append(int(operation[1:]))
                 ind = ind + 1
      
-        # print(self)
-
-    
-    
+    def toJSON(self):
+        pass
