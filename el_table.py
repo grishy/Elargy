@@ -2,8 +2,7 @@ import re
 import json
 import el_grammar
 
-#TO DO: R1 and admission in table 
-xxx
+
 
 class ElTable:
     TABLE = '''
@@ -52,9 +51,11 @@ class ElTable:
         for numR, r in enumerate(self.gm.rules):
             for s in r.right_side:
                 for l in s.left:
-                    self.setСell(l, s.text, s.right)
+                    self.setСell(l, s.text,'S%(state)i'%{"state":s.right} )
 
     def setReverse(self):
+        self.setСell(1, 'S', 'admission')
+        self.setСell(self.gm.rules[0].right_side[-1].right, '$', 'R1')
         num_rules = 0
         for numR, r in enumerate(self.gm.rules):
             num_rules = num_rules + 1 
@@ -95,6 +96,7 @@ class ElTable:
     def toHTML(self):
         topList = sorted(list(self.gm.notTerm | self.gm.term))
         topList.append("$")
+        topList.append("S")
         leftList = sorted(list(self.gm.idxs))
 
         topHTML = ["<th>{}</th>".format(x) for x in [""] + topList]

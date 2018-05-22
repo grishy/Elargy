@@ -2,6 +2,7 @@ import sys
 import el_lexer
 import el_grammar
 import el_table
+import el_parsing
 
 # name = sys.argv[1]
 name = "examples/calc.elg"
@@ -32,3 +33,6 @@ with open(name, 'r') as content_file:
     tableOut = open(steps + 'table.html', 'w+')
     tableOut.write(table.toHTML())
     tableOut.close()
+
+    # Parse
+    parser = el_parsing.ElParser(grammar, table, lex)
