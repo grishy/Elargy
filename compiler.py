@@ -36,3 +36,10 @@ with open(name, 'r') as content_file:
 
     # Parse
     parser = el_parsing.ElParser(grammar, table, lex)
+    # Save to temp dir
+    parserOut = open(steps + 'parserTree.json', 'w+')
+    parserOut.write(parser.toJSON())
+    parserOut.close()
+    parserOut = open(steps + 'parserTree.html', 'w+')
+    parserOut.write(parser.toHTML())
+    parserOut.close()

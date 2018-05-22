@@ -1,0 +1,107 @@
+{
+  "typ": "S",
+  "child": [
+    {
+      "typ": "E",
+      "child": [
+        {
+          "typ": "T",
+          "child": [
+            {
+              "typ": "F",
+              "child": [
+                {
+                  "typ": "INTEGER",
+                  "val": "34",
+                  "line": 1,
+                  "column": 12
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "typ": "PLUS",
+          "val": "+",
+          "line": 1,
+          "column": 15
+        },
+        {
+          "typ": "E",
+          "child": [
+            {
+              "typ": "T",
+              "child": [
+                {
+                  "typ": "F",
+                  "child": [
+                    {
+                      "typ": "INTEGER",
+                      "val": "34",
+                      "line": 1,
+                      "column": 12
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "typ": "PLUS",
+              "val": "+",
+              "line": 1,
+              "column": 15
+            },
+            {
+              "typ": "E",
+              "child": [
+                {
+                  "typ": "T",
+                  "child": [
+                    {
+                      "typ": "F",
+                      "child": [
+                        {
+                          "typ": "INTEGER",
+                          "val": "34",
+                          "line": 1,
+                          "column": 12
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "typ": "PLUS",
+                  "val": "+",
+                  "line": 1,
+                  "column": 15
+                },
+                {
+                  "typ": "E",
+                  "child": [
+                    {
+                      "typ": "T",
+                      "child": [
+                        {
+                          "typ": "F",
+                          "child": [
+                            {
+                              "typ": "INTEGER",
+                              "val": "500",
+                              "line": 1,
+                              "column": 17
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
