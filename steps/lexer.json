@@ -13,7 +13,7 @@
   },
   {
     "typ": "INTEGER",
-    "val": "2",
+    "val": "200",
     "line": 1,
     "column": 4
   },
@@ -21,36 +21,36 @@
     "typ": "MINUS",
     "val": "-",
     "line": 1,
-    "column": 6
-  },
-  {
-    "typ": "INTEGER",
-    "val": "1",
-    "line": 1,
     "column": 8
   },
   {
-    "typ": "PLUS",
-    "val": "+",
+    "typ": "INTEGER",
+    "val": "3",
     "line": 1,
     "column": 10
   },
   {
-    "typ": "INTEGER",
-    "val": "34",
+    "typ": "PLUS",
+    "val": "+",
     "line": 1,
     "column": 12
   },
   {
-    "typ": "PLUS",
-    "val": "+",
+    "typ": "INTEGER",
+    "val": "1000",
     "line": 1,
-    "column": 15
+    "column": 14
+  },
+  {
+    "typ": "MINUS",
+    "val": "-",
+    "line": 1,
+    "column": 19
   },
   {
     "typ": "INTEGER",
-    "val": "500",
+    "val": "100000",
     "line": 1,
-    "column": 17
+    "column": 21
   }
 ]

@@ -165,13 +165,21 @@ class ElParser:
                 for x in range(ln):
                     states.pop(-1)
 
-                tokens = self.lx.tokens[ind - ln:ind]
+                toks= self.lx.tokens[ind - ln:ind]
                 ind-=1
                 
+                print("*" * 15)
+                print(rul.left_side)
+                print(toks)
+                print("*" * 15)
+
                 self.lx.tokens[ind] = {
                     'typ': rul.left_side,
-                    'child' : tokens
+                    'child' : toks
                 }
+
+                
+                
             elif(operation == 'error'):
                 print('PARSE ERROR')
                 break

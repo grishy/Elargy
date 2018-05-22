@@ -5,51 +5,41 @@
       "typ": "E",
       "child": [
         {
-          "typ": "T",
+          "typ": "F",
+          "child": [
+            {
+              "typ": "INTEGER",
+              "val": "1000",
+              "line": 1,
+              "column": 14
+            }
+          ]
+        },
+        {
+          "typ": "MINUS",
+          "val": "-",
+          "line": 1,
+          "column": 19
+        },
+        {
+          "typ": "E",
           "child": [
             {
               "typ": "F",
               "child": [
                 {
                   "typ": "INTEGER",
-                  "val": "34",
+                  "val": "1000",
                   "line": 1,
-                  "column": 12
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "typ": "PLUS",
-          "val": "+",
-          "line": 1,
-          "column": 15
-        },
-        {
-          "typ": "E",
-          "child": [
-            {
-              "typ": "T",
-              "child": [
-                {
-                  "typ": "F",
-                  "child": [
-                    {
-                      "typ": "INTEGER",
-                      "val": "34",
-                      "line": 1,
-                      "column": 12
-                    }
-                  ]
+                  "column": 14
                 }
               ]
             },
             {
-              "typ": "PLUS",
-              "val": "+",
+              "typ": "MINUS",
+              "val": "-",
               "line": 1,
-              "column": 15
+              "column": 19
             },
             {
               "typ": "E",
@@ -62,23 +52,18 @@
                       "child": [
                         {
                           "typ": "INTEGER",
-                          "val": "34",
+                          "val": "1000",
                           "line": 1,
-                          "column": 12
+                          "column": 14
                         }
                       ]
-                    }
-                  ]
-                },
-                {
-                  "typ": "PLUS",
-                  "val": "+",
-                  "line": 1,
-                  "column": 15
-                },
-                {
-                  "typ": "E",
-                  "child": [
+                    },
+                    {
+                      "typ": "MINUS",
+                      "val": "-",
+                      "line": 1,
+                      "column": 19
+                    },
                     {
                       "typ": "T",
                       "child": [
@@ -87,9 +72,9 @@
                           "child": [
                             {
                               "typ": "INTEGER",
-                              "val": "500",
+                              "val": "100000",
                               "line": 1,
-                              "column": 17
+                              "column": 21
                             }
                           ]
                         }

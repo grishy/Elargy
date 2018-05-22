@@ -6,7 +6,7 @@ class ElLexer:
     token_specification = [
         ('LPAREN',      r'\('),
         ('RPAREN',      r'\)'),
-        ('INTEGER',     r'[-+]?\d+'),
+        ('INTEGER',     r'\d+'),
         ('PLUS',        r'\+'),
         ('MINUS',       r'\-'),
         # Special
