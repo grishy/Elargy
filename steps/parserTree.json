@@ -9,9 +9,9 @@
           "child": [
             {
               "typ": "INTEGER",
-              "val": "1000",
+              "val": "500",
               "line": 1,
-              "column": 14
+              "column": 4
             }
           ]
         },
@@ -19,31 +19,31 @@
           "typ": "MINUS",
           "val": "-",
           "line": 1,
-          "column": 19
+          "column": 8
         },
         {
           "typ": "E",
           "child": [
             {
-              "typ": "F",
+              "typ": "T",
               "child": [
                 {
-                  "typ": "INTEGER",
-                  "val": "1000",
+                  "typ": "F",
+                  "child": [
+                    {
+                      "typ": "INTEGER",
+                      "val": "500",
+                      "line": 1,
+                      "column": 4
+                    }
+                  ]
+                },
+                {
+                  "typ": "MINUS",
+                  "val": "-",
                   "line": 1,
-                  "column": 14
-                }
-              ]
-            },
-            {
-              "typ": "MINUS",
-              "val": "-",
-              "line": 1,
-              "column": 19
-            },
-            {
-              "typ": "E",
-              "child": [
+                  "column": 8
+                },
                 {
                   "typ": "T",
                   "child": [
@@ -52,31 +52,9 @@
                       "child": [
                         {
                           "typ": "INTEGER",
-                          "val": "1000",
+                          "val": "33",
                           "line": 1,
-                          "column": 14
-                        }
-                      ]
-                    },
-                    {
-                      "typ": "MINUS",
-                      "val": "-",
-                      "line": 1,
-                      "column": 19
-                    },
-                    {
-                      "typ": "T",
-                      "child": [
-                        {
-                          "typ": "F",
-                          "child": [
-                            {
-                              "typ": "INTEGER",
-                              "val": "100000",
-                              "line": 1,
-                              "column": 21
-                            }
-                          ]
+                          "column": 10
                         }
                       ]
                     }

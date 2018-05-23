@@ -41,5 +41,5 @@ with open(name, 'r') as content_file:
     parserOut.write(parser.toJSON())
     parserOut.close()
     parserOut = open(steps + 'parserTree.html', 'w+')
-    parserOut.write(parser.toHTML())
+    parserOut.write(parser.toHTML(parser.tree))
     parserOut.close()

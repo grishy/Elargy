@@ -1,8 +1,4 @@
-import copy
-import json
 
-class ElParser:
-    HTMLPAGE = '''
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,7 +6,35 @@ class ElParser:
     <body>
         <div class="tree">
             <ul>
-                RRRRR
+                
+        <li> <a href="#">E</a> <ul> 
+        <li> <a href="#">F</a> <ul> 
+        <li> <a href="#"><b>INTEGER: 500</b></a>  </li>
+         </ul> </li>
+        
+
+        <li> <a href="#"><b>MINUS: -</b></a>  </li>
+        
+
+        <li> <a href="#">E</a> <ul> 
+        <li> <a href="#">T</a> <ul> 
+        <li> <a href="#">F</a> <ul> 
+        <li> <a href="#"><b>INTEGER: 500</b></a>  </li>
+         </ul> </li>
+        
+
+        <li> <a href="#"><b>MINUS: -</b></a>  </li>
+        
+
+        <li> <a href="#">T</a> <ul> 
+        <li> <a href="#">F</a> <ul> 
+        <li> <a href="#"><b>INTEGER: 33</b></a>  </li>
+         </ul> </li>
+         </ul> </li>
+         </ul> </li>
+         </ul> </li>
+         </ul> </li>
+        
             </ul>
         </div>
     </body>
@@ -123,99 +147,3 @@ class ElParser:
         Thanks :)*/
     </style>
 </html>
-'''
-
-
-    def __init__(self, grammar, table, lex):
-        self.gm = grammar
-        self.tl = table
-        self.lx = lex
-        self.lx.addToken("$",0,0)
-        self.tree = {}
-
-        operation = ''
-        ind = 0
-        states = [1]
-        symbols =''
-        yyy = 0 
-        
-        while True:
-            symb = self.lx.tokens[ind]
-            t = symb['typ']
-            st = states[-1]
-            # print('Символ')
-            # print(self.lx.tokens[ind]['typ'])
-            # print('Состояния')
-            # print(states)
-            # print('Индекс')
-            # print(ind)
-            try:
-                operation = self.tl.table[st][t]
-            except:
-                operation = 'error'
-
-            
-            if(operation == 'admission'):
-                self.tree = self.lx.tokens[-2]
-                print('ACEPT')
-                break
-            elif(operation[0] == 'R'):
-                rul = self.gm.rules[int(operation[1:])-1]
-
-                ln = len(rul.right_side)
-                for x in range(ln):
-                    states.pop(-1)
-
-                toks= self.lx.tokens[ind - ln:ind]
-                
-                # print("*" * 15)
-                # print(rul.left_side)
-                # print(toks)
-                # print("*" * 15)
-                ind-=1
-
-                self.lx.tokens[ind] = {
-                    'typ': rul.left_side,
-                    'child' : toks
-                }
-                
-                
-                # parserOut = open('./deb/%s_%s.html' % (ind,yyy), 'w+')
-                # parserOut.write(self.toHTML(self.lx.tokens[ind]))
-                # parserOut.close()
-                # yyy += 1
-                
-                
-                
-            elif(operation == 'error'):
-                print('PARSE ERROR')
-                break
-            elif(operation[0] == 'S'):
-                states.append(int(operation[1:]))
-                ind = ind + 1
-     
-
-    def toJSON(self):
-        return json.dumps(self.tree, indent=2)
-
-    def nodeToHTML(self,node):
-        html = '''
-        <li> <a href="#">{}</a> {} </li>
-        '''
-
-        hasChild = '''
-        <ul> {} </ul>
-        '''
-        
-        if "child" in node:
-            allChild =  "\n".join([self.nodeToHTML(c) for c in node["child"]])
-            htmlChild = "<ul> {} </ul>".format(allChild)
-            return html.format(node["typ"],htmlChild)
-        else:
-            text = "<b>{}: {}</b>".format(node["typ"], node["val"])
-            return html.format(text,"")
-
-    def toHTML(self, root):
-        intro = self.nodeToHTML(root)
-        out = self.HTMLPAGE.replace("RRRRR",intro)
-        return out

@@ -13,7 +13,7 @@
   },
   {
     "typ": "INTEGER",
-    "val": "200",
+    "val": "500",
     "line": 1,
     "column": 4
   },
@@ -25,32 +25,8 @@
   },
   {
     "typ": "INTEGER",
-    "val": "3",
+    "val": "33",
     "line": 1,
     "column": 10
-  },
-  {
-    "typ": "PLUS",
-    "val": "+",
-    "line": 1,
-    "column": 12
-  },
-  {
-    "typ": "INTEGER",
-    "val": "1000",
-    "line": 1,
-    "column": 14
-  },
-  {
-    "typ": "MINUS",
-    "val": "-",
-    "line": 1,
-    "column": 19
-  },
-  {
-    "typ": "INTEGER",
-    "val": "100000",
-    "line": 1,
-    "column": 21
   }
 ]
