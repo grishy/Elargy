@@ -41,11 +41,11 @@ class ElLexer:
                     f'{value!r} unexpected on line {self.line_num}')
             else:
                 column = mo.start() - self.line_start
-                self.addToken(type_, value, column)
+                self.__add_token(type_, value, column)
         # Запись результата в файл
-        self.export()
+        self.__export()
 
-    def addToken(self, type_, value, column):
+    def __add_token(self, type_, value, column):
         self.tokens.append({
             "type": type_,
             "value": value,
@@ -53,9 +53,9 @@ class ElLexer:
             "column": column
         })
 
-    def export(self):
+    def __export(self):
         with open("./steps/lexer.json", 'w+') as f:
             f.write(json.dumps(self.tokens, indent=2))
 
-    def getTokens(self):
+    def get_tokens(self):
         return self.tokens
