@@ -1,6 +1,0 @@
-S: E
-E: T PLUS E
-E: T
-T: F MINUS T
-T: F
-F: INTEGER
