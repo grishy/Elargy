@@ -5,7 +5,7 @@ import el_table
 import el_parsing
 
 # name = sys.argv[1]
-name = "examples/calc.elg"
+name = "input/calc.elg"
 steps = "steps/"
 
 
