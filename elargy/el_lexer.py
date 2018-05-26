@@ -1,60 +1,61 @@
 import re
 import json
+import os
+
 
 class ElLexer:
-    token_specification = [
-        ('LPAREN',      r'\('),
-        ('RPAREN',      r'\)'),
-        ('INTEGER',     r'\d+'),
-        ('PLUS',        r'\+'),
-        ('MINUS',       r'\-'),
+    token_specification = {
         # Special
-        ('NEWLINE',     r'\n'),
-        ('SKIP',        r'[ \t]+'),
-        ('MISMATCH',    r'.'),
-    ]
+        '_NEWLINE':  r'\n',
+        '_SKIP':     r'[ \t]+',
+        '_MISMATCH': r'.',
+    }
 
-    keywords = {'func', 'var', 'int'}
+    line_num = 1
+    line_start = 0
 
-    def __init__(self, text):
-        self.text = text
-        self.tokens = []
-        self.line_num = 1
-        self.line_start = 0
+    # Объединенный правила
+    tok_regex = ""
+    # Все токены после обработки
+    tokens = []
 
-        self.tok_regex = '|'.join('(?P<%s>%s)' %
-                                  pair for pair in self.token_specification)
+    def __init__(self, tokens):
+        all_tokens = {**tokens, **self.token_specification}
+        regex_group = ['(?P<{}>{})'.format(key, value)
+                       for key, value in all_tokens.items()]
 
-    def tokenize(self):
-        for mo in re.finditer(self.tok_regex, self.text):
-            kind = mo.lastgroup
-            value = mo.group(kind)
+        self.tok_regex = '|'.join(regex_group)
 
-            if kind == 'NEWLINE':
+    def tokenize(self, text):
+        for mo in re.finditer(self.tok_regex, text):
+            type_ = mo.lastgroup
+            value = mo.group(type_)
+
+            if type_ == '_NEWLINE':
                 line_start = mo.end()
                 self.line_num += 1
-            elif kind == 'SKIP':
+            elif type_ == '_SKIP':
                 pass
-            elif kind == 'MISMATCH':
+            elif type_ == '_MISMATCH':
                 raise RuntimeError(
                     f'{value!r} unexpected on line {self.line_num}')
             else:
-                if kind == 'ID' and value in self.keywords:
-                    kind = value
-
                 column = mo.start() - self.line_start
-                self.addToken(kind, value, column)
+                self.addToken(type_, value, column)
+        # Запись результата в файл
+        self.export()
 
-    def addToken(self, kind, value, column):
+    def addToken(self, type_, value, column):
         self.tokens.append({
-            "typ": kind,
-            "val": value,
+            "type": type_,
+            "value": value,
             "line": self.line_num,
             "column": column
         })
 
-    def toJSON(self):
-        return json.dumps(self.tokens, indent=2)
+    def export(self):
+        with open("./steps/lexer.json", 'w+') as f:
+            f.write(json.dumps(self.tokens, indent=2))
 
     def getTokens(self):
         return self.tokens

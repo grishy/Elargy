@@ -1,9 +1,9 @@
-import yaml
 import elargy.el_lexer
+import elargy.grammar
 
 
-def Parse(text, steps=None):
-    if not steps:
-        print("Без вывода промежуточных состояний")
+def Parse(text):
+    lexer = el_lexer.ElLexer(grammar.tokens)
+    lexer.tokenize(text)
 
-    print(text)
+

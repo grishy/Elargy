@@ -1,31 +1,31 @@
 [
   {
-    "typ": "INTEGER",
-    "val": "1",
+    "type": "INTEGER",
+    "value": "1",
     "line": 1,
     "column": 0
   },
   {
-    "typ": "PLUS",
-    "val": "+",
+    "type": "PLUS",
+    "value": "+",
     "line": 1,
     "column": 2
   },
   {
-    "typ": "INTEGER",
-    "val": "500",
+    "type": "INTEGER",
+    "value": "500",
     "line": 1,
     "column": 4
   },
   {
-    "typ": "MINUS",
-    "val": "-",
+    "type": "MINUS",
+    "value": "-",
     "line": 1,
     "column": 8
   },
   {
-    "typ": "INTEGER",
-    "val": "33",
+    "type": "INTEGER",
+    "value": "33",
     "line": 1,
     "column": 10
   }
