@@ -1,1 +1,13 @@
 **/__pycache__/**/*
+
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+tcl
+pyvenv.cfg
+.venv
+pip-selfcheck.json
