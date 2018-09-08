@@ -1,0 +1,23 @@
+{
+  "name": "elargy",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r   <a href=\"#\"><img src=\"https://i.imgur.com/MNS07wJ.png?1\" height=\"200\"></a>\r </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grishy/Elargy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Grishy/Elargy/issues"
+  },
+  "homepage": "https://github.com/Grishy/Elargy#readme",
+  "dependencies": {
+    "jison": "^0.4.18"
+  }
+}
