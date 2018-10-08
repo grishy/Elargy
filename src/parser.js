@@ -1,3 +1,13 @@
+let grammar2 = [
+    { leftside: "S", rightside: "A" },
+    { leftside: "S", rightside: "D" },
+    { leftside: "A", rightside: "a b" },
+    { leftside: "A", rightside: "a c" },
+    { leftside: "A", rightside: "A b" },
+    { leftside: "D", rightside: "c D" },
+    { leftside: "D", rightside: "b" }
+];
+
 let grammar = [
     { leftside: "S", rightside: "E" },
     { leftside: "E", rightside: "T + E" },
@@ -6,7 +16,6 @@ let grammar = [
     { leftside: "T", rightside: "F" },
     { leftside: "F", rightside: "i" }
 ];
-
 function parser(text) {
     grammar.forEach(rule => {
         rule.rightside = rule.rightside.split(" ");
@@ -15,7 +24,8 @@ function parser(text) {
             rule.rightside[i].index = true;
         }
     });
-    var ind = 1;
+    find0();
+    var ind = 2;
     grammar.forEach(rule => {
         for (var i = 0; i < rule.rightside.length; i += 2) {
             if (rule.rightside[i].length == 0) {
@@ -26,10 +36,6 @@ function parser(text) {
             }
         }
     });
-    // grammar[0].rightside[0].push(1);
-    // find1(1, "E");
-    // grammar[1].rightside[0].push(2);
-    // find1(2, "T");
     find3();
     grammar.forEach(rule => {
         for (var i = 0; i < rule.rightside.length; i += 2) {
@@ -39,26 +45,41 @@ function parser(text) {
     return grammar;
 }
 
+function find0() {
+    grammar[0].rightside[0] = [1];
+    grammar[0].rightside[0].index = true;
+    find1(1, grammar[0].rightside[1]);
+    for (var i = 1; i < grammar.length; i++) {
+        if (grammar[0].leftside == grammar[i].leftside) {
+            grammar[i].rightside[0] = grammar[0].rightside[0];
+            find1(1, grammar[i].rightside[1]);
+        }
+    }
+}
+
 function find1(ind, symb) {
     grammar.forEach(rule => {
         if (rule.leftside == symb) {
+            if (matchearch(rule.rightside[0], [ind])) {
+                return;
+            }
             rule.rightside[0].push(ind);
             find1(ind, rule.rightside[1]);
         }
     });
 }
 
-function find2(ind, symb) {
-    grammar.forEach(rule => {
-        for (var i = 0; i < rule.rightside.length; i++) {
-            if (!rule.rightside[i].index) {
-                if (rule.rightside[i] == symb) {
-                    rule.rightside[i - 1].push(ind);
-                }
-            }
-        }
-    });
-}
+// function find2(ind, symb) {
+//     grammar.forEach(rule => {
+//         for (var i = 0; i < rule.rightside.length; i++) {
+//             if (!rule.rightside[i].index) {
+//                 if (rule.rightside[i] == symb) {
+//                     rule.rightside[i - 1].push(ind);
+//                 }
+//             }
+//         }
+//     });
+// }
 
 function find3() {
     grammar.forEach(rule => {
