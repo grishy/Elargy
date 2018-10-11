@@ -1,28 +1,29 @@
 let grammar2 = [
-    { leftside: "S", rightside: "A" },
-    { leftside: "S", rightside: "D" },
-    { leftside: "A", rightside: "a b" },
-    { leftside: "A", rightside: "a c" },
-    { leftside: "A", rightside: "A b" },
-    { leftside: "D", rightside: "c D" },
-    { leftside: "D", rightside: "b" }
+    { leftside: 'S', rightside: 'A' },
+    { leftside: 'S', rightside: 'D' },
+    { leftside: 'A', rightside: 'a b' },
+    { leftside: 'A', rightside: 'a c' },
+    { leftside: 'A', rightside: 'A b' },
+    { leftside: 'D', rightside: 'c D' },
+    { leftside: 'D', rightside: 'b' }
 ];
 
 class parser {
     constructor(text) {
         //Грамматика
         this.grammar = [
-            { leftside: "S", rightside: "E" },
-            { leftside: "E", rightside: "T + E" },
-            { leftside: "E", rightside: "T" },
-            { leftside: "T", rightside: "F * T" },
-            { leftside: "T", rightside: "F" },
-            { leftside: "F", rightside: "i" }
+            { leftside: 'S', rightside: 'E' },
+            { leftside: 'E', rightside: 'T PLUS E' },
+            { leftside: 'E', rightside: 'T' },
+            { leftside: 'T', rightside: 'F MULT T' },
+            { leftside: 'T', rightside: 'F' },
+            { leftside: 'F', rightside: 'INTEGER' }
         ];
         let i = 1;
         this.grammar.forEach(rule => {
             rule.num = i++;
-            rule.rightside = rule.rightside.split(" ");
+            rule.rightside = rule.rightside.split(' ');
+            rule.rightside.characters = rule.rightside.length;
             for (let i = rule.rightside.length; i >= 0; i--) {
                 rule.rightside.splice(i, 0, []);
                 rule.rightside[i].index = true;
@@ -59,11 +60,11 @@ class parser {
         this.renderRules();
 
         //this.renderParserTable(this.parserTable);
-        this.grammar[0].rightside.push("$");
+        this.grammar[0].rightside.push('$');
         this.makeParserTable();
 
-//////////////////////////////
-        //this.tableTransform()
+        console.log(this.parserTable);
+        //this.parseString(text);
     }
 
     indexesByRule1() {
@@ -99,7 +100,7 @@ class parser {
                 }
             }
         });
-        Terms.push("$");
+        Terms.push('$');
         return this.unique(Terms);
     }
 
@@ -159,15 +160,15 @@ class parser {
 
     renderRules() {
         this.grammar.forEach(rule => {
-            let newstr = rule.leftside + " => ";
+            let newstr = rule.leftside + ' => ';
             for (let i = 0; i < rule.rightside.length; i++) {
                 if (rule.rightside[i].index == true) {
-                    newstr += "<sub>" + rule.rightside[i] + "</sub>";
+                    newstr += '<sub>' + rule.rightside[i] + '</sub>';
                 } else {
                     newstr += rule.rightside[i];
                 }
             }
-            $("ol").append("<li>" + newstr + "</li>");
+            $('ol').append('<li>' + newstr + '</li>');
         });
     }
 
@@ -176,22 +177,14 @@ class parser {
         this.grammar.forEach(rule => {
             for (let i = 1; i < rule.rightside.length; i += 2) {
                 rule.rightside[i - 1].forEach(ind => {
-                    this.parserTable.push({
-                        row: ind,
-                        column: rule.rightside[i],
-                        cell: "S" + rule.rightside[i + 1]
-                    });
+                    this.parserTable[ind + rule.rightside[i]] = 'S' + rule.rightside[i + 1];
                 });
             }
         });
         //REDUCE
         this.findReduceComand();
         //ACCEPT
-        this.parserTable.push({
-            row: 1,
-            column: this.axiom,
-            cell: "ACCEPT"
-        });
+        this.parserTable[1 + this.axiom] = 'ACCEPT';
     }
 
     findReduceComand() {
@@ -202,22 +195,14 @@ class parser {
             cell = this.findProduce(term);
             columns.forEach(col => {
                 cell.forEach(c => {
-                    this.parserTable.push({
-                        row: this.findLastIndex(c),
-                        column: col,
-                        cell: "R" + (c + 1)
-                    });
+                    this.parserTable[this.findLastIndex(c) + col] = 'R' + (c + 1);
                 });
             });
         });
 
-        let cellS = this.findProduce("S");
+        let cellS = this.findProduce('S');
         cellS.forEach(c => {
-            this.parserTable.push({
-                row: this.findLastIndex(c),
-                column: "$",
-                cell: "R" + (c + 1)
-            });
+            this.parserTable[this.findLastIndex(c) + '$'] = 'R' + (c + 1);
         });
     }
 
@@ -258,25 +243,58 @@ class parser {
         return finded;
     }
 
-    tableTransform(){
-        this.parserTable.forEach(element => {
-            element = {head: element.row + element.column, command: element.cell}
-        });
-        console.log(this.parserTable);
-    }
+    // tableTransform(){
+    //     this.parserTable.forEach(element => {
+    //         element = {head: element.row + element.column, command: element.cell}
+    //     });
+    //     console.log(this.parserTable);
+    // }
 
     parseString(text) {
         let characterStack = [];
         let statesStack = [1];
-        text.push({token: "$"});
+        text.push({ token: '$' });
         let command;
-        
-        for(let i = 0; command != 'ACCEPT';){
-            text[i]
+        let incoming;
+        let i = 0;
+        let j = 25;
+        let del = 0;
+        while(j--){
+            incoming = text[i].token;
+            console.log(statesStack[statesStack.length - 1], incoming);
+            command = this.tableSearch(statesStack[statesStack.length - 1], incoming);
+            console.log('Команда:',command);
+            console.log('Стэк состояний:', statesStack);
+            console.log('Стэк символов:', characterStack);
+            console.log('Входящий символ:', incoming);
+            console.log('i: ', i);
+            console.log(del);
+            if(command == false){
+                console.log('ОШИБКА!');
+                return;
+            } else if(command == 'ACCEPT'){
+                console.log('Строка успешно разобрана!');
+                return;
+            } else if(command[0] == 'S'){
+                characterStack.push(incoming);
+                statesStack.push(command.slice(1));
+                i++;
+            } else if(command[0] == 'R'){
+                characterStack.splice(- del, del);
+                del = this.grammar[Number(command.slice(1)) - 1].rightside.characters;
+                statesStack.splice(- del, del);
+                text.splice(i, 0, { token: this.grammar[Number(command.slice(1)) - 1].leftside});
+            }
+            console.log('---------------------------');
+            
         }
     }
 
-    // tableSearch(state, symb){
-    //     for
-    // }
+    tableSearch(state, symb) {
+        console.log(this.parserTable[state + symb]);
+        if (this.parserTable[state + symb] != undefined) return this.parserTable[state + symb];
+        else return false;
+    }
+
+
 }

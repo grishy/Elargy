@@ -6,7 +6,7 @@ const Specification = {
     RPAREN: /\)/,
     INTEGER: /\d+/,
     PLUS: /\+/,
-    MINUS: /\-/
+    MULT: /\*/
 };
 
 const arrayOfRegex = Object.entries(Specification).map(el => {
