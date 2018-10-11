@@ -8,114 +8,275 @@ let grammar2 = [
     { leftside: "D", rightside: "b" }
 ];
 
-let grammar = [
-    { leftside: "S", rightside: "E" },
-    { leftside: "E", rightside: "T + E" },
-    { leftside: "E", rightside: "T" },
-    { leftside: "T", rightside: "F * T" },
-    { leftside: "T", rightside: "F" },
-    { leftside: "F", rightside: "i" }
-];
-function parser(text) {
-    grammar.forEach(rule => {
-        rule.rightside = rule.rightside.split(" ");
-        for (var i = rule.rightside.length; i >= 0; i--) {
-            rule.rightside.splice(i, 0, []);
-            rule.rightside[i].index = true;
-        }
-    });
-    find0();
-    var ind = 2;
-    grammar.forEach(rule => {
-        for (var i = 0; i < rule.rightside.length; i += 2) {
-            if (rule.rightside[i].length == 0) {
-                rule.rightside[i].push(ind);
-                find1(ind, rule.rightside[i + 1]);
-                //find2(ind, rule.rightside[i + 1]);
-                ind++;
+class parser {
+    constructor(text) {
+        //Грамматика
+        this.grammar = [
+            { leftside: "S", rightside: "E" },
+            { leftside: "E", rightside: "T + E" },
+            { leftside: "E", rightside: "T" },
+            { leftside: "T", rightside: "F * T" },
+            { leftside: "T", rightside: "F" },
+            { leftside: "F", rightside: "i" }
+        ];
+        let i = 1;
+        this.grammar.forEach(rule => {
+            rule.num = i++;
+            rule.rightside = rule.rightside.split(" ");
+            for (let i = rule.rightside.length; i >= 0; i--) {
+                rule.rightside.splice(i, 0, []);
+                rule.rightside[i].index = true;
             }
-        }
-    });
-    find3();
-    grammar.forEach(rule => {
-        for (var i = 0; i < rule.rightside.length; i += 2) {
-            makeUnique(rule.rightside[i]);
-        }
-    });
-    return grammar;
-}
+        });
 
-function find0() {
-    grammar[0].rightside[0] = [1];
-    grammar[0].rightside[0].index = true;
-    find1(1, grammar[0].rightside[1]);
-    for (var i = 1; i < grammar.length; i++) {
-        if (grammar[0].leftside == grammar[i].leftside) {
-            grammar[i].rightside[0] = grammar[0].rightside[0];
-            find1(1, grammar[i].rightside[1]);
-        }
-    }
-}
+        //Таблица разбора
+        this.parserTable = [];
 
-function find1(ind, symb) {
-    grammar.forEach(rule => {
-        if (rule.leftside == symb) {
-            if (matchearch(rule.rightside[0], [ind])) {
-                return;
-            }
-            rule.rightside[0].push(ind);
-            find1(ind, rule.rightside[1]);
-        }
-    });
-}
-
-// function find2(ind, symb) {
-//     grammar.forEach(rule => {
-//         for (var i = 0; i < rule.rightside.length; i++) {
-//             if (!rule.rightside[i].index) {
-//                 if (rule.rightside[i] == symb) {
-//                     rule.rightside[i - 1].push(ind);
-//                 }
-//             }
-//         }
-//     });
-// }
-
-function find3() {
-    grammar.forEach(rule => {
-        for (var i = 1; i < rule.rightside.length; i += 2) {
-            find31(rule.rightside[i - 1], rule.rightside[i], rule.rightside[i + 1]);
-        }
-    });
-}
-
-function find31(prevind, symb, nextind) {
-    grammar.forEach(rule => {
-        for (var i = 1; i < rule.rightside.length; i += 2) {
-            if (rule.rightside[i] == symb) {
-                if (matchearch(prevind, rule.rightside[i - 1])) {
-                    rule.rightside[i + 1] = nextind;
-                    console.log("AAAAAAAAAAA");
+        //Терминалы
+        this.terminals = this.getTerminals();
+        //Нетерминалы
+        this.noterminals = this.getNoTerminals();
+        //Аксиома
+        this.axiom = this.noterminals[0];
+        this.indexesByRule1();
+        let ind = 2;
+        this.grammar.forEach(rule => {
+            for (let i = 0; i < rule.rightside.length; i += 2) {
+                if (rule.rightside[i].length == 0) {
+                    rule.rightside[i].push(ind);
+                    this.indexesByRule2(ind, rule.rightside[i + 1]);
+                    ind++;
                 }
             }
-        }
-    });
-}
+        });
+        this.indexesByRule3();
+        this.grammar.forEach(rule => {
+            for (let i = 0; i < rule.rightside.length; i += 2) {
+                this.unique(rule.rightside[i]);
+            }
+        });
 
-function makeUnique(a) {
-    for (var q = 1, i = 1; q < a.length; ++q) {
-        if (a[q] !== a[q - 1]) {
-            a[i++] = a[q];
+        this.renderRules();
+
+        //this.renderParserTable(this.parserTable);
+        this.grammar[0].rightside.push("$");
+        this.makeParserTable();
+
+//////////////////////////////
+        //this.tableTransform()
+    }
+
+    indexesByRule1() {
+        this.grammar[0].rightside[0] = [1];
+        this.grammar[0].rightside[0].index = true;
+        this.indexesByRule2(1, this.grammar[0].rightside[1]);
+        for (let i = 1; i < this.grammar.length; i++) {
+            if (this.grammar[0].leftside == this.grammar[i].leftside) {
+                this.grammar[i].rightside[0] = this.grammar[0].rightside[0];
+                this.indexesByRule2(1, this.grammar[i].rightside[1]);
+            }
         }
     }
 
-    a.length = i;
-    return a;
-}
-
-function matchearch(array1, array2) {
-    for (var i = 0; i < array1.length; i++) {
-        for (var j = 0; j < array2.length; j++) if (array1[i] == array2[j]) return true;
+    getNoTerminals() {
+        let noTerms = [];
+        this.grammar.forEach(rule => {
+            noTerms.push(rule.leftside);
+        });
+        return this.unique(noTerms);
     }
-    return false;
+
+    getTerminals() {
+        let Terms = [];
+        let noTerms = this.getNoTerminals();
+        this.grammar.forEach(rule => {
+            for (let i = 0; i < rule.rightside.length; i++) {
+                if (
+                    !this.matchearch([rule.rightside[i]], noTerms) &&
+                    rule.rightside[i].index === undefined
+                ) {
+                    Terms.push(rule.rightside[i]);
+                }
+            }
+        });
+        Terms.push("$");
+        return this.unique(Terms);
+    }
+
+    indexesByRule2(ind, symb) {
+        this.grammar.forEach(rule => {
+            if (rule.leftside == symb) {
+                if (this.matchearch(rule.rightside[0], [ind])) {
+                    return;
+                }
+                rule.rightside[0].push(ind);
+                this.indexesByRule2(ind, rule.rightside[1]);
+            }
+        });
+    }
+
+    indexesByRule3() {
+        this.grammar.forEach(rule => {
+            for (let i = 1; i < rule.rightside.length; i += 2) {
+                this.identicalTransitions(
+                    rule.rightside[i - 1],
+                    rule.rightside[i],
+                    rule.rightside[i + 1]
+                );
+            }
+        });
+    }
+
+    identicalTransitions(prevind, symb, nextind) {
+        this.grammar.forEach(rule => {
+            for (let i = 1; i < rule.rightside.length; i += 2) {
+                if (rule.rightside[i] == symb) {
+                    if (this.matchearch(prevind, rule.rightside[i - 1])) {
+                        rule.rightside[i + 1] = nextind;
+                    }
+                }
+            }
+        });
+    }
+
+    unique(arr) {
+        let obj = {};
+
+        for (let i = 0; i < arr.length; i++) {
+            let str = arr[i];
+            obj[str] = true;
+        }
+
+        return Object.keys(obj);
+    }
+
+    matchearch(array1, array2) {
+        for (let i = 0; i < array1.length; i++) {
+            for (let j = 0; j < array2.length; j++) if (array1[i] == array2[j]) return true;
+        }
+        return false;
+    }
+
+    renderRules() {
+        this.grammar.forEach(rule => {
+            let newstr = rule.leftside + " => ";
+            for (let i = 0; i < rule.rightside.length; i++) {
+                if (rule.rightside[i].index == true) {
+                    newstr += "<sub>" + rule.rightside[i] + "</sub>";
+                } else {
+                    newstr += rule.rightside[i];
+                }
+            }
+            $("ol").append("<li>" + newstr + "</li>");
+        });
+    }
+
+    makeParserTable() {
+        //SHIFT
+        this.grammar.forEach(rule => {
+            for (let i = 1; i < rule.rightside.length; i += 2) {
+                rule.rightside[i - 1].forEach(ind => {
+                    this.parserTable.push({
+                        row: ind,
+                        column: rule.rightside[i],
+                        cell: "S" + rule.rightside[i + 1]
+                    });
+                });
+            }
+        });
+        //REDUCE
+        this.findReduceComand();
+        //ACCEPT
+        this.parserTable.push({
+            row: 1,
+            column: this.axiom,
+            cell: "ACCEPT"
+        });
+    }
+
+    findReduceComand() {
+        let columns = [];
+        let cell = [];
+        this.noterminals.forEach(term => {
+            columns = this.findNextTerminal(term);
+            cell = this.findProduce(term);
+            columns.forEach(col => {
+                cell.forEach(c => {
+                    this.parserTable.push({
+                        row: this.findLastIndex(c),
+                        column: col,
+                        cell: "R" + (c + 1)
+                    });
+                });
+            });
+        });
+
+        let cellS = this.findProduce("S");
+        cellS.forEach(c => {
+            this.parserTable.push({
+                row: this.findLastIndex(c),
+                column: "$",
+                cell: "R" + (c + 1)
+            });
+        });
+    }
+
+    findProduce(leftside) {
+        let finded = [];
+        for (let i = 0; i < this.grammar.length; i++) {
+            if (this.grammar[i].leftside == leftside) {
+                finded.push(i);
+            }
+        }
+        return finded;
+    }
+
+    findLastIndex(numrule) {
+        let lastind;
+        for (let i = 0; i < this.grammar[numrule].rightside.length; i++) {
+            if (this.grammar[numrule].rightside[i].index != undefined)
+                lastind = this.grammar[numrule].rightside[i][0];
+        }
+        return lastind;
+    }
+
+    findNextTerminal(LSide) {
+        let finded = [];
+        this.grammar.forEach(rule => {
+            for (let i = 1; i < rule.rightside.length; i += 2) {
+                if (rule.rightside[i] == LSide) {
+                    if (rule.rightside.length == 1 + 2) {
+                        finded = finded.concat(this.findNextTerminal(rule.leftside));
+                    }
+                    if (i + 2 < rule.rightside.length) {
+                        finded.push(rule.rightside[i + 2]);
+                    }
+                }
+            }
+        });
+
+        return finded;
+    }
+
+    tableTransform(){
+        this.parserTable.forEach(element => {
+            element = {head: element.row + element.column, command: element.cell}
+        });
+        console.log(this.parserTable);
+    }
+
+    parseString(text) {
+        let characterStack = [];
+        let statesStack = [1];
+        text.push({token: "$"});
+        let command;
+        
+        for(let i = 0; command != 'ACCEPT';){
+            text[i]
+        }
+    }
+
+    // tableSearch(state, symb){
+    //     for
+    // }
 }
