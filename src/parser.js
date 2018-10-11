@@ -39,6 +39,7 @@ class parser {
         this.noterminals = this.getNoTerminals();
         //Аксиома
         this.axiom = this.noterminals[0];
+        //Расстановка индексов
         this.indexesByRule1();
         let ind = 2;
         this.grammar.forEach(rule => {
@@ -56,17 +57,16 @@ class parser {
                 this.unique(rule.rightside[i]);
             }
         });
-
+        //Вывод правил продукций с индексами
         this.renderRules();
-
-        //this.renderParserTable(this.parserTable);
+        //Добавляем символ конца строки
         this.grammar[0].rightside.push('$');
+        //Построение таблицы разбора
         this.makeParserTable();
-
         console.log(this.parserTable);
-        //this.parseString(text);
-    }
 
+    }
+    //Расстановка индексов по 1 правилу
     indexesByRule1() {
         this.grammar[0].rightside[0] = [1];
         this.grammar[0].rightside[0].index = true;
@@ -78,7 +78,7 @@ class parser {
             }
         }
     }
-
+    //Получение нетерминальных символов
     getNoTerminals() {
         let noTerms = [];
         this.grammar.forEach(rule => {
@@ -86,14 +86,14 @@ class parser {
         });
         return this.unique(noTerms);
     }
-
+    //Получение терминальных символов
     getTerminals() {
         let Terms = [];
         let noTerms = this.getNoTerminals();
         this.grammar.forEach(rule => {
             for (let i = 0; i < rule.rightside.length; i++) {
                 if (
-                    !this.matchearch([rule.rightside[i]], noTerms) &&
+                    !this.matchSearch([rule.rightside[i]], noTerms) &&
                     rule.rightside[i].index === undefined
                 ) {
                     Terms.push(rule.rightside[i]);
@@ -103,11 +103,11 @@ class parser {
         Terms.push('$');
         return this.unique(Terms);
     }
-
+    //Расстановка индексов по 2 правилу
     indexesByRule2(ind, symb) {
         this.grammar.forEach(rule => {
             if (rule.leftside == symb) {
-                if (this.matchearch(rule.rightside[0], [ind])) {
+                if (this.matchSearch(rule.rightside[0], [ind])) {
                     return;
                 }
                 rule.rightside[0].push(ind);
@@ -115,7 +115,7 @@ class parser {
             }
         });
     }
-
+    //Расстановка индексов по 3 правилу
     indexesByRule3() {
         this.grammar.forEach(rule => {
             for (let i = 1; i < rule.rightside.length; i += 2) {
@@ -127,19 +127,19 @@ class parser {
             }
         });
     }
-
+    //Нахождение одинаковых переходов
     identicalTransitions(prevind, symb, nextind) {
         this.grammar.forEach(rule => {
             for (let i = 1; i < rule.rightside.length; i += 2) {
                 if (rule.rightside[i] == symb) {
-                    if (this.matchearch(prevind, rule.rightside[i - 1])) {
+                    if (this.matchSearch(prevind, rule.rightside[i - 1])) {
                         rule.rightside[i + 1] = nextind;
                     }
                 }
             }
         });
     }
-
+    //Массив без повторяющихся значений
     unique(arr) {
         let obj = {};
 
@@ -150,14 +150,14 @@ class parser {
 
         return Object.keys(obj);
     }
-
-    matchearch(array1, array2) {
+    //Поиск совпадений в двух массивах
+    matchSearch(array1, array2) {
         for (let i = 0; i < array1.length; i++) {
             for (let j = 0; j < array2.length; j++) if (array1[i] == array2[j]) return true;
         }
         return false;
     }
-
+    //Вывод правил продукции с индексами
     renderRules() {
         this.grammar.forEach(rule => {
             let newstr = rule.leftside + ' => ';
@@ -171,7 +171,7 @@ class parser {
             $('ol').append('<li>' + newstr + '</li>');
         });
     }
-
+    //Создание таблицы разбора
     makeParserTable() {
         //SHIFT
         this.grammar.forEach(rule => {
@@ -186,7 +186,7 @@ class parser {
         //ACCEPT
         this.parserTable[1 + this.axiom] = 'ACCEPT';
     }
-
+    //Поиск команд свёртки(приведения) и добавление их в таблицу разбора
     findReduceComand() {
         let columns = [];
         let cell = [];
@@ -199,13 +199,12 @@ class parser {
                 });
             });
         });
-
         let cellS = this.findProduce('S');
         cellS.forEach(c => {
             this.parserTable[this.findLastIndex(c) + '$'] = 'R' + (c + 1);
         });
     }
-
+    //Поиск номеров правил продукций для нетерминала
     findProduce(leftside) {
         let finded = [];
         for (let i = 0; i < this.grammar.length; i++) {
@@ -215,7 +214,7 @@ class parser {
         }
         return finded;
     }
-
+    //Поиск конечного индекса в правиле продукции
     findLastIndex(numrule) {
         let lastind;
         for (let i = 0; i < this.grammar[numrule].rightside.length; i++) {
@@ -224,7 +223,7 @@ class parser {
         }
         return lastind;
     }
-
+    //Поиск символа-следователя
     findNextTerminal(LSide) {
         let finded = [];
         this.grammar.forEach(rule => {
@@ -242,14 +241,7 @@ class parser {
 
         return finded;
     }
-
-    // tableTransform(){
-    //     this.parserTable.forEach(element => {
-    //         element = {head: element.row + element.column, command: element.cell}
-    //     });
-    //     console.log(this.parserTable);
-    // }
-
+    //Разбор строки
     parseString(text) {
         let characterStack = [];
         let statesStack = [1];
@@ -257,9 +249,8 @@ class parser {
         let command;
         let incoming;
         let i = 0;
-        let j = 25;
         let del = 0;
-        while(j--){
+        while(true){
             incoming = text[i].token;
             console.log(statesStack[statesStack.length - 1], incoming);
             command = this.tableSearch(statesStack[statesStack.length - 1], incoming);
@@ -289,7 +280,7 @@ class parser {
             
         }
     }
-
+    //Нахождение комманды в таблице разбора
     tableSearch(state, symb) {
         console.log(this.parserTable[state + symb]);
         if (this.parserTable[state + symb] != undefined) return this.parserTable[state + symb];
