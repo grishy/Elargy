@@ -1,28 +1,37 @@
 let grammar2 = [
-    { leftside: 'S', rightside: 'A' },
-    { leftside: 'S', rightside: 'D' },
-    { leftside: 'A', rightside: 'a b' },
-    { leftside: 'A', rightside: 'a c' },
-    { leftside: 'A', rightside: 'A b' },
-    { leftside: 'D', rightside: 'c D' },
-    { leftside: 'D', rightside: 'b' }
+    { leftside: "S", rightside: "A" },
+    { leftside: "S", rightside: "D" },
+    { leftside: "A", rightside: "a b" },
+    { leftside: "A", rightside: "a c" },
+    { leftside: "A", rightside: "A b" },
+    { leftside: "D", rightside: "c D" },
+    { leftside: "D", rightside: "b" }
+];
+
+let grammar1 = [
+    { leftside: "S", rightside: "E" },
+    { leftside: "E", rightside: "T PLUS E" },
+    { leftside: "E", rightside: "T" },
+    { leftside: "T", rightside: "F MULT T" },
+    { leftside: "T", rightside: "F" },
+    { leftside: "F", rightside: "INTEGER" }
 ];
 
 class parser {
     constructor(text) {
         //Грамматика
         this.grammar = [
-            { leftside: 'S', rightside: 'E' },
-            { leftside: 'E', rightside: 'T PLUS E' },
-            { leftside: 'E', rightside: 'T' },
-            { leftside: 'T', rightside: 'F MULT T' },
-            { leftside: 'T', rightside: 'F' },
-            { leftside: 'F', rightside: 'INTEGER' }
+            { leftside: "S", rightside: "E" },
+            { leftside: "E", rightside: "T PLUS E" },
+            { leftside: "E", rightside: "T" },
+            { leftside: "T", rightside: "F MULT T" },
+            { leftside: "T", rightside: "F" },
+            { leftside: "F", rightside: "INTEGER" }
         ];
         let i = 1;
         this.grammar.forEach(rule => {
             rule.num = i++;
-            rule.rightside = rule.rightside.split(' ');
+            rule.rightside = rule.rightside.split(" ");
             rule.rightside.characters = rule.rightside.length;
             for (let i = rule.rightside.length; i >= 0; i--) {
                 rule.rightside.splice(i, 0, []);
@@ -60,11 +69,10 @@ class parser {
         //Вывод правил продукций с индексами
         this.renderRules();
         //Добавляем символ конца строки
-        this.grammar[0].rightside.push('$');
+        this.grammar[0].rightside.push("$");
         //Построение таблицы разбора
         this.makeParserTable();
         console.log(this.parserTable);
-
     }
     //Расстановка индексов по 1 правилу
     indexesByRule1() {
@@ -100,7 +108,7 @@ class parser {
                 }
             }
         });
-        Terms.push('$');
+        Terms.push("$");
         return this.unique(Terms);
     }
     //Расстановка индексов по 2 правилу
@@ -160,15 +168,15 @@ class parser {
     //Вывод правил продукции с индексами
     renderRules() {
         this.grammar.forEach(rule => {
-            let newstr = rule.leftside + ' => ';
+            let newstr = rule.leftside + " => ";
             for (let i = 0; i < rule.rightside.length; i++) {
                 if (rule.rightside[i].index == true) {
-                    newstr += '<sub>' + rule.rightside[i] + '</sub>';
+                    newstr += "<sub>" + rule.rightside[i] + "</sub>";
                 } else {
                     newstr += rule.rightside[i];
                 }
             }
-            $('ol').append('<li>' + newstr + '</li>');
+            $("ol").append("<li>" + newstr + "</li>");
         });
     }
     //Создание таблицы разбора
@@ -177,14 +185,14 @@ class parser {
         this.grammar.forEach(rule => {
             for (let i = 1; i < rule.rightside.length; i += 2) {
                 rule.rightside[i - 1].forEach(ind => {
-                    this.parserTable[ind + rule.rightside[i]] = 'S' + rule.rightside[i + 1];
+                    this.parserTable[ind + rule.rightside[i]] = "S" + rule.rightside[i + 1];
                 });
             }
         });
         //REDUCE
         this.findReduceComand();
         //ACCEPT
-        this.parserTable[1 + this.axiom] = 'ACCEPT';
+        this.parserTable[1 + this.axiom] = "ACCEPT";
     }
     //Поиск команд свёртки(приведения) и добавление их в таблицу разбора
     findReduceComand() {
@@ -195,13 +203,13 @@ class parser {
             cell = this.findProduce(term);
             columns.forEach(col => {
                 cell.forEach(c => {
-                    this.parserTable[this.findLastIndex(c) + col] = 'R' + (c + 1);
+                    this.parserTable[this.findLastIndex(c) + col] = "R" + (c + 1);
                 });
             });
         });
-        let cellS = this.findProduce('S');
+        let cellS = this.findProduce("S");
         cellS.forEach(c => {
-            this.parserTable[this.findLastIndex(c) + '$'] = 'R' + (c + 1);
+            this.parserTable[this.findLastIndex(c) + "$"] = "R" + (c + 1);
         });
     }
     //Поиск номеров правил продукций для нетерминала
@@ -243,41 +251,47 @@ class parser {
     }
     //Разбор строки
     parseString(text) {
+        //let parseTree = text;
         let characterStack = [];
-        let statesStack = [1];
-        text.push({ token: '$' });
+        let statesStack = ["1"];
+        text.push({ token: "$" });
         let command;
         let incoming;
         let i = 0;
         let del = 0;
-        while(true){
+        while (true) {
             incoming = text[i].token;
             console.log(statesStack[statesStack.length - 1], incoming);
             command = this.tableSearch(statesStack[statesStack.length - 1], incoming);
-            console.log('Команда:',command);
-            console.log('Стэк состояний:', statesStack);
-            console.log('Стэк символов:', characterStack);
-            console.log('Входящий символ:', incoming);
-            console.log('i: ', i);
+            console.log("Команда:", command);
+            console.log("Стэк состояний:", statesStack);
+            console.log("Стэк символов:", characterStack);
+            console.log("Входящий символ:", incoming);
+            console.log("Текст:", text);
+            console.log("i: ", i);
             console.log(del);
-            if(command == false){
-                console.log('ОШИБКА!');
+            if (command == false) {
+                console.log("ОШИБКА!");
                 return;
-            } else if(command == 'ACCEPT'){
-                console.log('Строка успешно разобрана!');
-                return;
-            } else if(command[0] == 'S'){
+            } else if (command == "ACCEPT") {
+                console.log("Строка успешно разобрана!");
+                return text;
+            } else if (command[0] == "S") {
                 characterStack.push(incoming);
                 statesStack.push(command.slice(1));
                 i++;
-            } else if(command[0] == 'R'){
-                characterStack.splice(- del, del);
+            } else if (command[0] == "R") {
                 del = this.grammar[Number(command.slice(1)) - 1].rightside.characters;
-                statesStack.splice(- del, del);
-                text.splice(i, 0, { token: this.grammar[Number(command.slice(1)) - 1].leftside});
+                characterStack.splice(-del, del);
+                statesStack.splice(-del, del);
+                let ch = text.slice(i - del, i);
+                text.splice(i - del, del, {
+                    token: this.grammar[Number(command.slice(1)) - 1].leftside,
+                    child: ch
+                });
+                i -= del;
             }
-            console.log('---------------------------');
-            
+            console.log("---------------------------");
         }
     }
     //Нахождение комманды в таблице разбора
@@ -286,6 +300,4 @@ class parser {
         if (this.parserTable[state + symb] != undefined) return this.parserTable[state + symb];
         else return false;
     }
-
-
 }
