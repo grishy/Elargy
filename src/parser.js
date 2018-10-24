@@ -1,3 +1,115 @@
+
+
+let HTMLPAGE = `<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <div class="tree">
+            <ul>
+                RRRRR
+            </ul>
+        </div>
+    </body>
+    <style>
+        /*Now the CSS*/
+        * {
+            margin: 0; padding: 0;
+        }
+        .tree ul {
+            padding-top: 20px; position: relative;
+            
+            transition: all 0.5s;
+            -webkit-transition: all 0.5s;
+            -moz-transition: all 0.5s;
+        }
+        .tree li {
+            float: left; text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 20px 5px 0 5px;
+            
+            transition: all 0.5s;
+            -webkit-transition: all 0.5s;
+            -moz-transition: all 0.5s;
+        }
+        /*We will use ::before and ::after to draw the connectors*/
+        .tree li::before, .tree li::after{
+            content: '';
+            position: absolute; top: 0; right: 50%;
+            border-top: 1px solid #ccc;
+            width: 50%; height: 20px;
+        }
+        .tree li::after{
+            right: auto; left: 50%;
+            border-left: 1px solid #ccc;
+        }
+        /*We need to remove left-right connectors from elements without 
+        any siblings*/
+        .tree li:only-child::after, .tree li:only-child::before {
+            display: none;
+        }
+        /*Remove space from the top of single children*/
+        .tree li:only-child{ padding-top: 0;}
+        /*Remove left connector from first child and 
+        right connector from last child*/
+        .tree li:first-child::before, .tree li:last-child::after{
+            border: 0 none;
+        }
+        /*Adding back the vertical connector to the last nodes*/
+        .tree li:last-child::before{
+            border-right: 1px solid #ccc;
+            border-radius: 0 5px 0 0;
+            -webkit-border-radius: 0 5px 0 0;
+            -moz-border-radius: 0 5px 0 0;
+        }
+        .tree li:first-child::after{
+            border-radius: 5px 0 0 0;
+            -webkit-border-radius: 5px 0 0 0;
+            -moz-border-radius: 5px 0 0 0;
+        }
+        /*Time to add downward connectors from parents*/
+        .tree ul ul::before{
+            content: '';
+            position: absolute; top: 0; left: 50%;
+            border-left: 1px solid #ccc;
+            width: 0; height: 20px;
+        }
+        .tree li a{
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #666;
+            font-family: arial, verdana, tahoma;
+            font-size: 11px;
+            display: inline-block;
+            
+            border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            
+            transition: all 0.5s;
+            -webkit-transition: all 0.5s;
+            -moz-transition: all 0.5s;
+        }
+        /*Time for some hover effects*/
+        /*We will apply the hover effect the the lineage of the element also*/
+        .tree li a:hover, .tree li a:hover+ul li a {
+            background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+        }
+        /*Connector styles on hover*/
+        .tree li a:hover+ul li::after, 
+        .tree li a:hover+ul li::before, 
+        .tree li a:hover+ul::before, 
+        .tree li a:hover+ul ul::before{
+            border-color:  #94a0b4;
+        }
+        /*Thats all. I hope you enjoyed it.
+        Thanks :)*/
+    </style>
+</html>`
+
+
 let grammar2 = [
     { leftside: "S", rightside: "A" },
     { leftside: "S", rightside: "D" },
@@ -72,7 +184,12 @@ class parser {
         this.grammar[0].rightside.push("$");
         //Построение таблицы разбора
         this.makeParserTable();
+        this.parseTree = [];
+        //AST
+        this.ast = [];
+        //this.parseTreeToAST(parseTree);
         console.log(this.parserTable);
+        
     }
     //Расстановка индексов по 1 правилу
     indexesByRule1() {
@@ -275,6 +392,8 @@ class parser {
                 return;
             } else if (command == "ACCEPT") {
                 console.log("Строка успешно разобрана!");
+                text.pop();
+                this.parseTree = text;
                 return text;
             } else if (command[0] == "S") {
                 characterStack.push(incoming);
@@ -300,4 +419,70 @@ class parser {
         if (this.parserTable[state + symb] != undefined) return this.parserTable[state + symb];
         else return false;
     }
+
+    parseTreeToAST(parseTree) {
+        this.ast = Object.assign({}, parseTree);
+
+        //this.ast[0] = this.ast[0].child;
+        this.ast = this.nodeAnalysis(this.ast[0]);
+        console.log("AST");
+        console.log(this.ast);
+    }
+
+    nodeAnalysis(node) {
+        console.log("node");
+        console.log(node);
+        if (node.child === undefined) {
+            console.log("RET");
+            return node;
+        }
+        for (let i = 0; i < node.child.length; i++) {
+            console.log("for");
+            // console.log('ch', ch.token);
+            // console.log(ch.child);
+            node.child[i] = this.nodeAnalysis(node.child[i]);
+            //console.log(ch, ch.child);
+        }
+        if (node.value === undefined) {
+            console.log("MATCh");
+            if (node.child.length == 1) {
+                node = node.child[0];
+            } else {
+                node = node.child;
+            }
+
+            console.log;
+        }
+
+        return node;
+    }
+
+    astTreeToHTML(ast) {
+        
+        //this.allChilds(ast);
+
+        let spl = HTMLPAGE.split(`RRRRR`);
+        let ht = spl[0] + this.allChilds(ast) + spl[1];
+        document.write(ht);
+        
+    }
+
+    allChilds(node){
+        let html = '';
+        for(let i = 0; i < node.length; i++){
+            if(Array.isArray(node[i])){
+                if(node[i] !== undefined){
+                    let htmlChild = `<ul> ${this.allChilds(node[i])} </ul>`;
+                    html += `<li>  ${htmlChild} </li>`;
+                }
+                
+            } else{
+                if(node[i].value !== undefined){
+                    html+= `<li> <a href="#">${node[i].value}</a></li>`;
+                }
+            }
+        }
+        return html;
+    }
+    
 }
