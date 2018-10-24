@@ -36,7 +36,16 @@ function lexer(text) {
         if (token === "_SKIP") {
             return;
         } else {
-            out.push({ token, value, index: result.index });
+            
+            /////////////К
+            if(token === "PLUS" || token === "MULT"){
+                out.push({ token, value, index: result.index, operation: true });
+            }    
+            /////////////
+            else{
+                out.push({ token, value, index: result.index });
+            }
+            
         }
     }
     return out;

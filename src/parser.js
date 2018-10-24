@@ -1,5 +1,3 @@
-
-
 let HTMLPAGE = `<!DOCTYPE html>
 <html>
     <head>
@@ -107,8 +105,7 @@ let HTMLPAGE = `<!DOCTYPE html>
         /*Thats all. I hope you enjoyed it.
         Thanks :)*/
     </style>
-</html>`
-
+</html>`;
 
 let grammar2 = [
     { leftside: "S", rightside: "A" },
@@ -189,7 +186,6 @@ class parser {
         this.ast = [];
         //this.parseTreeToAST(parseTree);
         console.log(this.parserTable);
-        
     }
     //Расстановка индексов по 1 правилу
     indexesByRule1() {
@@ -378,22 +374,24 @@ class parser {
         let del = 0;
         while (true) {
             incoming = text[i].token;
-            console.log(statesStack[statesStack.length - 1], incoming);
+            //console.log(statesStack[statesStack.length - 1], incoming);
             command = this.tableSearch(statesStack[statesStack.length - 1], incoming);
-            console.log("Команда:", command);
-            console.log("Стэк состояний:", statesStack);
-            console.log("Стэк символов:", characterStack);
-            console.log("Входящий символ:", incoming);
-            console.log("Текст:", text);
-            console.log("i: ", i);
-            console.log(del);
+            //console.log("Команда:", command);
+            //console.log("Стэк состояний:", statesStack);
+            //console.log("Стэк символов:", characterStack);
+            //console.log("Входящий символ:", incoming);
+            //console.log("Текст:", text);
+            //console.log("i: ", i);
+           //console.log(del);
             if (command == false) {
-                console.log("ОШИБКА!");
+                //console.log("ОШИБКА!");
                 return;
             } else if (command == "ACCEPT") {
-                console.log("Строка успешно разобрана!");
+                //console.log("Строка успешно разобрана!");
                 text.pop();
                 this.parseTree = text;
+                //console.log("ParseTree");
+                console.log(text);
                 return text;
             } else if (command[0] == "S") {
                 characterStack.push(incoming);
@@ -410,79 +408,85 @@ class parser {
                 });
                 i -= del;
             }
-            console.log("---------------------------");
+            //console.log("---------------------------");
         }
     }
     //Нахождение комманды в таблице разбора
     tableSearch(state, symb) {
-        console.log(this.parserTable[state + symb]);
         if (this.parserTable[state + symb] != undefined) return this.parserTable[state + symb];
         else return false;
     }
 
     parseTreeToAST(parseTree) {
-        this.ast = Object.assign({}, parseTree);
+        this.ast = JSON.parse(JSON.stringify(parseTree));
+        //this.ast = Object.assign({}, parseTree);
 
         //this.ast[0] = this.ast[0].child;
         this.ast = this.nodeAnalysis(this.ast[0]);
         console.log("AST");
+        this.ast = this.nodePostAnalysis(this.ast);
         console.log(this.ast);
     }
 
     nodeAnalysis(node) {
-        console.log("node");
-        console.log(node);
         if (node.child === undefined) {
-            console.log("RET");
             return node;
         }
         for (let i = 0; i < node.child.length; i++) {
-            console.log("for");
             // console.log('ch', ch.token);
             // console.log(ch.child);
             node.child[i] = this.nodeAnalysis(node.child[i]);
             //console.log(ch, ch.child);
         }
         if (node.value === undefined) {
-            console.log("MATCh");
             if (node.child.length == 1) {
                 node = node.child[0];
             } else {
                 node = node.child;
             }
-
-            console.log;
         }
 
         return node;
     }
 
+    nodePostAnalysis(node) {
+        for (let i = 0; i < node.length; i++) {
+            if (Array.isArray(node[i])) {
+                node[i] = this.nodePostAnalysis(node[i]);
+            }
+        }
+        for (let i = 0; i < node.length; i++) {
+            if (node[i].operation) {
+                let newnode = node.splice(i, 1);
+                newnode.child = node;
+                node = newnode;
+            }
+        }
+        return node;
+    }
+
     astTreeToHTML(ast) {
-        
         //this.allChilds(ast);
 
         let spl = HTMLPAGE.split(`RRRRR`);
         let ht = spl[0] + this.allChilds(ast) + spl[1];
         document.write(ht);
-        
     }
 
-    allChilds(node){
-        let html = '';
-        for(let i = 0; i < node.length; i++){
-            if(Array.isArray(node[i])){
-                if(node[i] !== undefined){
-                    let htmlChild = `<ul> ${this.allChilds(node[i])} </ul>`;
-                    html += `<li>  ${htmlChild} </li>`;
-                }
-                
-            } else{
-                if(node[i].value !== undefined){
-                    html+= `<li> <a href="#">${node[i].value}</a></li>`;
-                }
+    allChilds(node) {
+        let html = `<li> <a href="#">{}</a> {} </li>`;
+        let hasChild = `<ul> {} </ul>`;
+        if (Array.isArray(node.child)) {
+            let allChildsHTML = "";
+            for(let i = 0; i < node.child.length; i++){
+                allChildsHTML += this.allChilds(node.child[i]);
             }
+                
+            let htmlChild = `<ul> ${allChildsHTML} </ul>`;
+            return `<li> <a href="#">${node[0].value}</a> ${htmlChild} </li>`;
+        } else {
+            let text = `<b>${node.token}: ${node.value}</b>`;
+            return `<li> <a href="#">${text}</a>  </li>`
         }
-        return html;
     }
-    
 }
