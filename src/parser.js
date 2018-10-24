@@ -1,112 +1,3 @@
-let HTMLPAGE = `<!DOCTYPE html>
-<html>
-    <head>
-    </head>
-    <body>
-        <div class="tree">
-            <ul>
-                RRRRR
-            </ul>
-        </div>
-    </body>
-    <style>
-        /*Now the CSS*/
-        * {
-            margin: 0; padding: 0;
-        }
-        .tree ul {
-            padding-top: 20px; position: relative;
-            
-            transition: all 0.5s;
-            -webkit-transition: all 0.5s;
-            -moz-transition: all 0.5s;
-        }
-        .tree li {
-            float: left; text-align: center;
-            list-style-type: none;
-            position: relative;
-            padding: 20px 5px 0 5px;
-            
-            transition: all 0.5s;
-            -webkit-transition: all 0.5s;
-            -moz-transition: all 0.5s;
-        }
-        /*We will use ::before and ::after to draw the connectors*/
-        .tree li::before, .tree li::after{
-            content: '';
-            position: absolute; top: 0; right: 50%;
-            border-top: 1px solid #ccc;
-            width: 50%; height: 20px;
-        }
-        .tree li::after{
-            right: auto; left: 50%;
-            border-left: 1px solid #ccc;
-        }
-        /*We need to remove left-right connectors from elements without 
-        any siblings*/
-        .tree li:only-child::after, .tree li:only-child::before {
-            display: none;
-        }
-        /*Remove space from the top of single children*/
-        .tree li:only-child{ padding-top: 0;}
-        /*Remove left connector from first child and 
-        right connector from last child*/
-        .tree li:first-child::before, .tree li:last-child::after{
-            border: 0 none;
-        }
-        /*Adding back the vertical connector to the last nodes*/
-        .tree li:last-child::before{
-            border-right: 1px solid #ccc;
-            border-radius: 0 5px 0 0;
-            -webkit-border-radius: 0 5px 0 0;
-            -moz-border-radius: 0 5px 0 0;
-        }
-        .tree li:first-child::after{
-            border-radius: 5px 0 0 0;
-            -webkit-border-radius: 5px 0 0 0;
-            -moz-border-radius: 5px 0 0 0;
-        }
-        /*Time to add downward connectors from parents*/
-        .tree ul ul::before{
-            content: '';
-            position: absolute; top: 0; left: 50%;
-            border-left: 1px solid #ccc;
-            width: 0; height: 20px;
-        }
-        .tree li a{
-            border: 1px solid #ccc;
-            padding: 5px 10px;
-            text-decoration: none;
-            color: #666;
-            font-family: arial, verdana, tahoma;
-            font-size: 11px;
-            display: inline-block;
-            
-            border-radius: 5px;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            
-            transition: all 0.5s;
-            -webkit-transition: all 0.5s;
-            -moz-transition: all 0.5s;
-        }
-        /*Time for some hover effects*/
-        /*We will apply the hover effect the the lineage of the element also*/
-        .tree li a:hover, .tree li a:hover+ul li a {
-            background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
-        }
-        /*Connector styles on hover*/
-        .tree li a:hover+ul li::after, 
-        .tree li a:hover+ul li::before, 
-        .tree li a:hover+ul::before, 
-        .tree li a:hover+ul ul::before{
-            border-color:  #94a0b4;
-        }
-        /*Thats all. I hope you enjoyed it.
-        Thanks :)*/
-    </style>
-</html>`;
-
 let grammar2 = [
     { leftside: "S", rightside: "A" },
     { leftside: "S", rightside: "D" },
@@ -181,6 +72,8 @@ class parser {
         this.grammar[0].rightside.push("$");
         //Построение таблицы разбора
         this.makeParserTable();
+        // Вывод таблицы
+        this.createParseTable();
         this.parseTree = [];
         //AST
         this.ast = [];
@@ -289,16 +182,25 @@ class parser {
                     newstr += rule.rightside[i];
                 }
             }
-            $("ol").append("<li>" + newstr + "</li>");
+            $(".grammar-index").append("<li>" + newstr + "</li>");
         });
     }
     //Создание таблицы разбора
     makeParserTable() {
+        this.parserTableOut = []
         //SHIFT
         this.grammar.forEach(rule => {
             for (let i = 1; i < rule.rightside.length; i += 2) {
                 rule.rightside[i - 1].forEach(ind => {
+                    const t = "S" + rule.rightside[i + 1];
                     this.parserTable[ind + rule.rightside[i]] = "S" + rule.rightside[i + 1];
+
+                    if (this.parserTableOut[ind] == undefined) {
+                        this.parserTableOut[ind] = []
+                        this.parserTableOut[ind][rule.rightside[i]] = t
+                    } else {
+                        this.parserTableOut[ind][rule.rightside[i]] = t
+                    }
                 });
             }
         });
@@ -306,7 +208,73 @@ class parser {
         this.findReduceComand();
         //ACCEPT
         this.parserTable[1 + this.axiom] = "ACCEPT";
+        this.parserTableOut[1][this.axiom] = "ACCEPT";
     }
+    //Создание таблицы для парсинга
+    createParseTable() {
+        const allSymb = [...this.noterminals, ...this.terminals];
+        const max_index = Math.max(...Object.keys(this.parserTableOut))
+        const el = document.querySelector(".parse-table");
+
+        let table = []
+
+        for (let index = 1; index <= max_index; index++) {
+            table[index] = []
+
+            for (const el of allSymb) {
+                table[index][el] = ""
+            }
+        }
+
+        for (let index = 1; index <= max_index; index++) {
+            const element = this.parserTableOut[index];
+            if (element == undefined) {
+                continue;
+            }
+
+            for (const key in element) {
+                table[index][key] = element[key]
+            }
+        }
+
+        // const val = element[key];
+        el.innerHTML = "123"
+
+        const tableHTML = document.createElement('table');
+        const tableHTMLBody = document.createElement('tbody');
+        const tableHTMLHead = document.createElement('thead');
+
+        tableHTMLHead.appendChild(document.createElement('th'));
+        for (const iterator in table[1]) {
+            const el = document.createElement('th')
+            el.innerHTML = iterator
+            tableHTMLHead.appendChild(el)
+        }
+
+        for (const key1 in table) {
+            const rowData = table[key1]
+            const row = document.createElement('tr');
+
+            const ind =  document.createElement('td')
+            ind.innerText = key1;
+            row.appendChild(ind);
+
+            for (const key2 in rowData) {
+                const cellData = rowData[key2]
+                const cell = document.createElement('td');
+                cell.appendChild(document.createTextNode(cellData));
+                row.appendChild(cell);
+            }
+        
+            tableHTMLBody.appendChild(row);
+        }
+  
+        
+        tableHTML.appendChild(tableHTMLHead);
+        tableHTML.appendChild(tableHTMLBody);
+        el.innerHTML = tableHTML.innerHTML
+    }
+
     //Поиск команд свёртки(приведения) и добавление их в таблицу разбора
     findReduceComand() {
         let columns = [];
@@ -316,13 +284,31 @@ class parser {
             cell = this.findProduce(term);
             columns.forEach(col => {
                 cell.forEach(c => {
-                    this.parserTable[this.findLastIndex(c) + col] = "R" + (c + 1);
+                    const t = "R" + (c + 1)
+
+                    this.parserTable[this.findLastIndex(c) + col] = t;
+
+                    if (this.parserTableOut[this.findLastIndex(c)] == undefined) {
+                        this.parserTableOut[this.findLastIndex(c)] = []
+                        this.parserTableOut[this.findLastIndex(c)][col] = t
+                    } else {
+                        this.parserTableOut[this.findLastIndex(c)][col] = t
+                    }
                 });
             });
         });
+
         let cellS = this.findProduce("S");
         cellS.forEach(c => {
-            this.parserTable[this.findLastIndex(c) + "$"] = "R" + (c + 1);
+            const t = "R" + (c + 1)
+            this.parserTable[this.findLastIndex(c) + "$"] = t;
+
+            if (this.parserTableOut[this.findLastIndex(c)] == undefined) {
+                this.parserTableOut[this.findLastIndex(c)] = []
+                this.parserTableOut[this.findLastIndex(c)]["$"] = t
+            } else {
+                this.parserTableOut[this.findLastIndex(c)]["$"] = t
+            }
         });
     }
     //Поиск номеров правил продукций для нетерминала
@@ -382,7 +368,7 @@ class parser {
             //console.log("Входящий символ:", incoming);
             //console.log("Текст:", text);
             //console.log("i: ", i);
-           //console.log(del);
+            //console.log(del);
             if (command == false) {
                 //console.log("ОШИБКА!");
                 return;
@@ -466,11 +452,8 @@ class parser {
     }
 
     astTreeToHTML(ast) {
-        //this.allChilds(ast);
-
-        let spl = HTMLPAGE.split(`RRRRR`);
-        let ht = spl[0] + this.allChilds(ast) + spl[1];
-        document.write(ht);
+        const el = document.querySelector(".ast");
+        el.innerHTML = this.allChilds(ast);
     }
 
     allChilds(node) {
@@ -478,10 +461,10 @@ class parser {
         let hasChild = `<ul> {} </ul>`;
         if (Array.isArray(node.child)) {
             let allChildsHTML = "";
-            for(let i = 0; i < node.child.length; i++){
+            for (let i = 0; i < node.child.length; i++) {
                 allChildsHTML += this.allChilds(node.child[i]);
             }
-                
+
             let htmlChild = `<ul> ${allChildsHTML} </ul>`;
             return `<li> <a href="#">${node[0].value}</a> ${htmlChild} </li>`;
         } else {
