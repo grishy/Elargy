@@ -255,7 +255,7 @@ class parser {
             const rowData = table[key1]
             const row = document.createElement('tr');
 
-            const ind =  document.createElement('td')
+            const ind =  document.createElement('th')
             ind.innerText = key1;
             row.appendChild(ind);
 
@@ -455,10 +455,31 @@ class parser {
         const el = document.querySelector(".ast");
         el.innerHTML = this.allChilds(ast);
     }
+    parseTreeToHTML(parseTree) {
+        console.log(parseTree);
+        console.log(this.ast);
+        const el = document.querySelector(".parseT");
+        el.innerHTML = this.allChildsParseTree(parseTree);
+    }
+
+    allChildsParseTree(node) {
+        let html = `<li> <a href="#">{}</a> {} </li>`;
+        if (Array.isArray(node.child)) {
+            let allChildsHTML = "";
+            for (let i = 0; i < node.child.length; i++) {
+                allChildsHTML += this.allChildsParseTree(node.child[i]);
+            }
+
+            let htmlChild = `<ul> ${allChildsHTML} </ul>`;
+            return `<li> <a href="#">${node.token}</a> ${htmlChild} </li>`;
+        } else {
+            return `<li> <a href="#"><b>${node.token}</b></a>  </li>`
+        }
+        
+    }
 
     allChilds(node) {
         let html = `<li> <a href="#">{}</a> {} </li>`;
-        let hasChild = `<ul> {} </ul>`;
         if (Array.isArray(node.child)) {
             let allChildsHTML = "";
             for (let i = 0; i < node.child.length; i++) {

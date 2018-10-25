@@ -37,6 +37,13 @@ table {
 	box-sizing: border-box;
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
 }
 
 th {
@@ -51,6 +58,8 @@ th {
 td, th {
 	border: 1px solid #aab;
 	text-align: center;
+	width: 1em;
+	width: 2%;
 }
 
 #parse-table-container td, #parse-steps-container td:nth-child(4) {
@@ -92,7 +101,9 @@ td.error {
 .button {
 	text-align: center;
 }
-
+.tree {
+	position: relative;
+}
 .tree ul {
 	padding-top: 20px;
 	position: relative;
@@ -209,5 +220,3 @@ right connector from last child*/
 	border-color: #94a0b4;
 }
 
-/*Thats all. I hope you enjoyed it.
-Thanks :)*/
