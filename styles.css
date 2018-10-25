@@ -38,6 +38,7 @@ table {
 	width: 100%;
 	border-collapse: collapse;
 	table-layout: fixed;
+	font-family: monospace;
 }
 
 thead {
@@ -61,7 +62,13 @@ td, th {
 	width: 1em;
 	width: 2%;
 }
+.parse-steps td{
+	text-align: left;
+}
 
+#inpStr td{
+	text-align: center;
+}
 #parse-table-container td, #parse-steps-container td:nth-child(4) {
 	text-align: center;
 }
@@ -100,6 +107,26 @@ td.error {
 
 .button {
 	text-align: center;
+}
+
+.terminal {
+    color: red;
+}
+
+.non-terminal {
+    color: blue;
+}
+
+.parse-steps{
+	font-family: monospace;
+	/* font-size: 11pt; */
+}
+
+.terminal b, .non-terminal b {
+    font-weight: 400;
+    background-color: #aab;
+    padding: 0 .15em;
+    margin: 0 .15em;
 }
 .tree {
 	position: relative;

@@ -15,20 +15,19 @@
 
 <body>
     <header>
-        <h1>LR(1) Parser Vis</h1>
-        <p>Create LR(1) parsers in your browser, and see how they work.</p>
+        <h1>LR(1) Парсер</h1>
+        <!-- <p>Create LR(1) parsers in your browser, and see how they work.</p> -->
     </header>
 
     <main>
         <section>
-            <h2>Grammar</h2>
-            <p>How to write the grammar:</p>
+            <h2>Грамматика</h2>
+            <p>Правила записи грамматики:</p>
             <ul>
-                <li>The first symbol must be the start symbol;</li>
-                <li>Separate symbols with a space;</li>
-                <li>Write only one rule per line—no bars;</li>
-                <li>Do not use arrows—use a space; and</li>
-                <li>Do not write an end marker.</li>
+                <li>Первый символ должен быть стартовым;</li>
+                <li>Символы должны быть разделены пробелом;</li>
+                <li>Каждое правило должно быть записано в новой строке;</li>
+                <li>Использовать '=>' для разделения правой и левой части правила грамматики</li>
             </ul>
             <textarea class="grammar-text" placeholder="grammar" disabled>
 S => E
@@ -38,42 +37,47 @@ T => F MULT T
 T => F
 F => INTEGER
             </textarea>
-            <textarea class="input-text" placeholder="input">
+            <textarea id="input-text" placeholder="input">
 1 + 500 * 3 + 10 *1 + 2 * 21 * 214
             </textarea>
             <ol class="button">
                 <p>
-                    <button type="button" class="create-parser">Create Parser</button>
+                    <input type="button" class="create-parser" value="Разобрать строку" onclick="makeParser()"></input>
                     <!-- <button type="button" class="show-example">Show an Example</button> -->
                     <!-- <button type="reset" class="clear">Clear</button> -->
                 </p>
             </ol>
         </section>
         <section>
-            <h2>Grammar index</h2>
+            <h2>Грамматика с раставленными индексами</h2>
             <ol class="grammar-index"></ol>
         </section>
         <section>
-            <h2>Parse Table</h2>
+            <h2>Таблица разбора</h2>
             <table class="parse-table">
                 
             </table>
         </section>
         <section>
-            <h2>Parse Steps</h2>
-
+            <h2>Шаги разбора</h2>
+            <table class="parse-steps">
+                
+            </table>
         </section>
-        <section>
+        <!-- <section>
             <h2>Parse Tree</h2>
             <div class="tree">
-                <ul class="parseT"></ul>
+                <ul class="parseT">
+
+                </ul>
             </div>
-        </section>
-        <br>
+        </section> -->
         <section>
-            <h2>AST </h2>
+            <h2>Абстрактное синтаксическое дерево</h2>
             <div class="tree">
-                <ul class="ast"></ul>
+                <ul class="ast">
+
+                </ul>
             </div>
         </section>
     </main>
