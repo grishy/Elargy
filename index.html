@@ -29,6 +29,7 @@
                 <li>Каждое правило должно быть записано в новой строке;</li>
                 <li>Использовать '=>' для разделения правой и левой части правила грамматики</li>
             </ul>
+            
             <textarea class="grammar-text" placeholder="grammar" disabled>
 S => E
 E => T PLUS E
@@ -37,8 +38,10 @@ T => F MULT T
 T => F
 F => INTEGER
             </textarea>
+            <textarea class="terminals-text" placeholder="grammar" disabled>
+INTEGER|PLUS|MULT</textarea>
             <textarea id="input-text" placeholder="input">
-1 + 500 * 3 + 10 *1 + 2 * 21 * 214
+INTEGER MULT INTEGER PLUS INTEGER
             </textarea>
             <ol class="button">
                 <p>

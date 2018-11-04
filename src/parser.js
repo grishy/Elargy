@@ -18,16 +18,22 @@ let grammar1 = [
 ];
 
 class parser {
-    constructor(text) {
+    constructor(gramm, terms) {
         //Грамматика
-        this.grammar = [
-            { leftside: "S", rightside: "E" },
-            { leftside: "E", rightside: "T PLUS E" },
-            { leftside: "E", rightside: "T" },
-            { leftside: "T", rightside: "F MULT T" },
-            { leftside: "T", rightside: "F" },
-            { leftside: "F", rightside: "INTEGER" }
-        ];
+        this.grammar = [];
+        gramm = gramm.split("\n");
+        gramm.forEach(rule => {
+            let spl = rule.split("=>");
+            console.log(spl);
+            if (spl.length == 2) {
+                let newObj = {
+                    leftside: spl[0].trim(),
+                    rightside: spl[1].trim()
+                };
+                this.grammar.push(newObj);
+            }
+        });
+
         let i = 1;
         this.grammar.forEach(rule => {
             rule.num = i++;
@@ -43,7 +49,14 @@ class parser {
         this.parserTable = [];
 
         //Терминалы
-        this.terminals = this.getTerminals();
+        //this.terminals = terms.replaceAll("\s", " ");;
+        this.terminals = terms.split("|");
+        this.terminals.forEach(element => {
+            element = element.trim();
+            console.log(element)
+        });
+        console.log(...this.terminals)
+        this.terminals.push("$");
         //Нетерминалы
         this.noterminals = this.getNoTerminals();
         //Аксиома
@@ -194,7 +207,9 @@ class parser {
                 rule.rightside[i - 1].forEach(ind => {
                     const t = "S" + rule.rightside[i + 1];
                     this.parserTable[ind + rule.rightside[i]] = "S" + rule.rightside[i + 1];
-
+                    console.log("----------")
+                    console.log(t)
+                    console.log(ind + rule.rightside[i])
                     if (this.parserTableOut[ind] == undefined) {
                         this.parserTableOut[ind] = [];
                         this.parserTableOut[ind][rule.rightside[i]] = t;
@@ -262,17 +277,20 @@ class parser {
             for (const key2 in rowData) {
                 const cellData = rowData[key2];
                 const cell = document.createElement("td");
-                if(cellData[0] == 'S'){
-                    cell.className = 'shift';
-                }else if(cellData[0] == 'R'){
-                    cell.className = 'reduce';
-                }else if(cellData[0] == 'A'){
-                    cell.className = 'accept';
+                if (cellData[0] == "S") {
+                    cell.className = "shift";
+                } else if (cellData[0] == "R") {
+                    cell.className = "reduce";
+                } else if (cellData[0] == "A") {
+                    cell.className = "accept";
                 } else {
-                    cell.className = 'error';
+                    cell.className = "error";
                 }
                 cell.appendChild(document.createTextNode(cellData));
                 row.appendChild(cell);
+                console.log('===========')
+                console.log(row, key2)
+                console.log(cell)
             }
 
             tableHTMLBody.appendChild(row);
@@ -347,6 +365,9 @@ class parser {
                     if (rule.rightside.length == 1 + 2) {
                         finded = finded.concat(this.findNextTerminal(rule.leftside));
                     }
+                    if (this.matchSearch([rule.rightside[i + 2]], this.noterminals)) {
+                        finded = finded.concat(this.findFirstTerminal(rule.rightside[i + 2]));
+                    }
                     if (i + 2 < rule.rightside.length) {
                         finded.push(rule.rightside[i + 2]);
                     }
@@ -354,6 +375,16 @@ class parser {
             }
         });
 
+        return finded;
+    }
+
+    findFirstTerminal(LSide) {
+        let finded = [];
+        this.grammar.forEach(element => {
+            if (element.leftside == LSide) {
+                finded.push(element.rightside[1]);
+            }
+        });
         return finded;
     }
     //Разбор строки
@@ -383,19 +414,18 @@ class parser {
             //console.log(statesStack[statesStack.length - 1], incoming);
             command = this.tableSearch(statesStack[statesStack.length - 1], incoming);
 
-            
             const row = document.createElement("tr");
             //Стек состояний
             const cell1 = document.createElement("td");
-            cell1.appendChild(document.createTextNode(statesStack.join(' ')));
+            cell1.appendChild(document.createTextNode(statesStack.join(" ")));
             row.appendChild(cell1);
             //Стек символов
             const cell2 = document.createElement("td");
-            let cell2Data = '';
+            let cell2Data = "";
             characterStack.forEach(el => {
-                if(this.matchSearch([el], this.noterminals)){
+                if (this.matchSearch([el], this.noterminals)) {
                     cell2Data += `<b class="non-terminal">${el}</b> `;
-                } else{
+                } else {
                     cell2Data += `<b class="terminal">${el}</b> `;
                 }
             });
@@ -403,12 +433,12 @@ class parser {
             row.appendChild(cell2);
             //Входной символ
             const cell3 = document.createElement("td");
-            cell3.setAttribute('id', 'inpStr' );
-            let cell3Data = '';
+            cell3.setAttribute("id", "inpStr");
+            let cell3Data = "";
             inputString.forEach(el => {
-                if(this.matchSearch([el.token], this.noterminals)){
+                if (this.matchSearch([el.token], this.noterminals)) {
                     cell3Data += `<b class="non-terminal">${el.value}</b> `;
-                } else{
+                } else {
                     cell3Data += `<b class="terminal">${el.value}</b> `;
                 }
             });
@@ -421,17 +451,17 @@ class parser {
             row.appendChild(cell3);
 
             const cell4 = document.createElement("td");
-            let cell4Data = '';
-            if(command[0] == 'S'){
-                cell4.className = 'shift';
-            }else if(command[0] == 'R'){
-                cell4.className = 'reduce';
-            }else if(command[0] == 'A'){
-                cell4.className = 'accept';
+            let cell4Data = "";
+            if (command[0] == "S") {
+                cell4.className = "shift";
+            } else if (command[0] == "R") {
+                cell4.className = "reduce";
+            } else if (command[0] == "A") {
+                cell4.className = "accept";
             }
             cell4.appendChild(document.createTextNode(command));
             row.appendChild(cell4);
-            
+
             tableHTMLBody.appendChild(row);
             tableHTML.appendChild(tableHTMLHead);
             tableHTML.appendChild(tableHTMLBody);
@@ -463,7 +493,10 @@ class parser {
                 characterStack.splice(-del, del);
                 statesStack.splice(-del, del);
                 let ch = text.slice(i - del, i);
-                inputString.splice(i - del, del, { token: this.grammar[Number(command.slice(1)) - 1].leftside, value: this.grammar[Number(command.slice(1)) - 1].leftside});
+                inputString.splice(i - del, del, {
+                    token: this.grammar[Number(command.slice(1)) - 1].leftside,
+                    value: this.grammar[Number(command.slice(1)) - 1].leftside
+                });
                 text.splice(i - del, del, {
                     token: this.grammar[Number(command.slice(1)) - 1].leftside,
                     child: ch
@@ -567,5 +600,17 @@ class parser {
             let text = `<b>${node.token}: ${node.value}</b>`;
             return `<li> <a href="#">${text}</a>  </li>`;
         }
+    }
+
+    lexer(str) {
+        let lexemList = str.split(" ");
+        let out = [];
+        for (let i = 0; i < lexemList.length; i++) {
+            out.push({
+                token: lexemList[i],
+                value: lexemList[i]
+            });
+        }
+        return out;
     }
 }
