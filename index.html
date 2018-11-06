@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link href="normalize.css" rel="stylesheet">
+    <!-- <link href="normalize.css" rel="stylesheet"> -->
     <link href="styles.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="./src/lexer.js"></script>
@@ -29,8 +29,8 @@
                 <li>Каждое правило должно быть записано в новой строке;</li>
                 <li>Использовать '=>' для разделения правой и левой части правила грамматики</li>
             </ul>
-            
-            <textarea class="grammar-text" placeholder="grammar" disabled>
+
+            <textarea class="grammar-text" placeholder="grammar">
 S => E
 E => T PLUS E
 E => T
@@ -38,7 +38,7 @@ T => F MULT T
 T => F
 F => INTEGER
             </textarea>
-            <textarea class="terminals-text" placeholder="grammar" disabled>
+            <textarea class="terminals-text" placeholder="grammar">
 INTEGER|PLUS|MULT</textarea>
             <textarea id="input-text" placeholder="input">
 INTEGER MULT INTEGER PLUS INTEGER
@@ -58,31 +58,31 @@ INTEGER MULT INTEGER PLUS INTEGER
         <section>
             <h2>Таблица разбора</h2>
             <table class="parse-table">
-                
+
             </table>
         </section>
         <section>
             <h2>Шаги разбора</h2>
             <table class="parse-steps">
-                
+
             </table>
         </section>
-        <!-- <section>
+        <section>
             <h2>Parse Tree</h2>
             <div class="tree">
                 <ul class="parseT">
 
                 </ul>
             </div>
-        </section> -->
-        <section>
+        </section>
+        <!-- <section>
             <h2>Абстрактное синтаксическое дерево</h2>
             <div class="tree">
                 <ul class="ast">
 
                 </ul>
             </div>
-        </section>
+        </section> -->
     </main>
     <script src="./src/index.js"></script>
 

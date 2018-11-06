@@ -11,11 +11,13 @@
 // A=>A b c
 // A=>b
 // B=>d`, `a|b|c|d|e`
-console.log(...$(".grammar-text").val())
-console.log($(".terminals-text").val())
-var prsr = new parser(String($(".grammar-text").val()),String($(".terminals-text").val()));
-var parseTree = prsr.parseString(prsr.lexer($("#input-text").val().trim()));
+
 //prsr.parseTreeToAST(parseTree);
 //prsr.astTreeToHTML(prsr.ast);
 
 
+function makeParser(){
+    var prsr = new parser(String($(".grammar-text").val()),String($(".terminals-text").val()));
+    var parseTree = prsr.parseString(prsr.lexer($("#input-text").val().trim()));
+    prsr.parseTreeToHTML(prsr.parseTree);
+}

@@ -166,6 +166,7 @@ td.error {
 	right: auto;
 	left: 50%;
 	border-left: 1px solid #ccc;
+	
 }
 
 /*We need to remove left-right connectors from elements without 
